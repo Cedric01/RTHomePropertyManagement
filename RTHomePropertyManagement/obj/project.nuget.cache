@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "2b9O4sV5YCDql3rSU7u17uUHkGoQH2TF0K9Ymt3rjzCJiofxVGzFlOccRCjp3dt7obVgRa5866Ti4Fr8cbFyOg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\RTHomePropertyManagement\\RTHomePropertyManagement.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\kehiy\\.nuget\\packages\\microsoft.aspnetcore.openapi\\8.0.3\\microsoft.aspnetcore.openapi.8.0.3.nupkg.sha512",
+    "C:\\Users\\kehiy\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "C:\\Users\\kehiy\\.nuget\\packages\\microsoft.openapi\\1.4.3\\microsoft.openapi.1.4.3.nupkg.sha512",
+    "C:\\Users\\kehiy\\.nuget\\packages\\swashbuckle.aspnetcore\\6.4.0\\swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
+    "C:\\Users\\kehiy\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.4.0\\swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
+    "C:\\Users\\kehiy\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.4.0\\swashbuckle.aspnetcore.swaggergen.6.4.0.nupkg.sha512",
+    "C:\\Users\\kehiy\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.4.0\\swashbuckle.aspnetcore.swaggerui.6.4.0.nupkg.sha512"
+  ],
+  "logs": []
+}
