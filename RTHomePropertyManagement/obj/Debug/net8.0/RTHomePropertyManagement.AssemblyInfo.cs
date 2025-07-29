@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RTHomePropertyManagement")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3671cbf2bfe1457549161ccbf22245a5459570a1")]
 [assembly: System.Reflection.AssemblyProductAttribute("RTHomePropertyManagement")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RTHomePropertyManagement")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

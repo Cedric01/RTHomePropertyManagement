@@ -3,12 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C442FD4D-247C-4403-99A7-F7D52BE3B4C4}|RTHomePropertyManagement\\RTHomePropertyManagement.csproj|c:\\users\\kehiy\\source\\repos\\rthomepropertymanagement\\rthomepropertymanagement\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C442FD4D-247C-4403-99A7-F7D52BE3B4C4}|RTHomePropertyManagement\\RTHomePropertyManagement.csproj|solutionrelative:rthomepropertymanagement\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C442FD4D-247C-4403-99A7-F7D52BE3B4C4}|RTHomePropertyManagement\\RTHomePropertyManagement.csproj|c:\\users\\kehiy\\source\\repos\\rthomepropertymanagement\\rthomepropertymanagement\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{C442FD4D-247C-4403-99A7-F7D52BE3B4C4}|RTHomePropertyManagement\\RTHomePropertyManagement.csproj|solutionrelative:rthomepropertymanagement\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C442FD4D-247C-4403-99A7-F7D52BE3B4C4}|RTHomePropertyManagement\\RTHomePropertyManagement.csproj|c:\\users\\kehiy\\source\\repos\\rthomepropertymanagement\\rthomepropertymanagement\\migrations\\20250729201050_initialmigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C442FD4D-247C-4403-99A7-F7D52BE3B4C4}|RTHomePropertyManagement\\RTHomePropertyManagement.csproj|solutionrelative:rthomepropertymanagement\\migrations\\20250729201050_initialmigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C442FD4D-247C-4403-99A7-F7D52BE3B4C4}|RTHomePropertyManagement\\RTHomePropertyManagement.csproj|c:\\users\\kehiy\\source\\repos\\rthomepropertymanagement\\rthomepropertymanagement\\rthomepropertymanagement.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{C442FD4D-247C-4403-99A7-F7D52BE3B4C4}|RTHomePropertyManagement\\RTHomePropertyManagement.csproj|solutionrelative:rthomepropertymanagement\\rthomepropertymanagement.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C442FD4D-247C-4403-99A7-F7D52BE3B4C4}|RTHomePropertyManagement\\RTHomePropertyManagement.csproj|c:\\users\\kehiy\\source\\repos\\rthomepropertymanagement\\rthomepropertymanagement\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C442FD4D-247C-4403-99A7-F7D52BE3B4C4}|RTHomePropertyManagement\\RTHomePropertyManagement.csproj|solutionrelative:rthomepropertymanagement\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C442FD4D-247C-4403-99A7-F7D52BE3B4C4}|RTHomePropertyManagement\\RTHomePropertyManagement.csproj|c:\\users\\kehiy\\source\\repos\\rthomepropertymanagement\\rthomepropertymanagement\\models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -22,43 +30,69 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
+              "Title": "20250729201050_InitialMigration.cs",
+              "DocumentMoniker": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\RTHomePropertyManagement\\Migrations\\20250729201050_InitialMigration.cs",
+              "RelativeDocumentMoniker": "RTHomePropertyManagement\\Migrations\\20250729201050_InitialMigration.cs",
+              "ToolTip": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\RTHomePropertyManagement\\Migrations\\20250729201050_InitialMigration.cs",
+              "RelativeToolTip": "RTHomePropertyManagement\\Migrations\\20250729201050_InitialMigration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-29T20:10:58.72Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\RTHomePropertyManagement\\appsettings.json",
+              "RelativeDocumentMoniker": "RTHomePropertyManagement\\appsettings.json",
+              "ToolTip": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\RTHomePropertyManagement\\appsettings.json",
+              "RelativeToolTip": "RTHomePropertyManagement\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAC6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-07-29T13:28:34.858Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\RTHomePropertyManagement\\Models\\AppDbContext.cs",
               "RelativeDocumentMoniker": "RTHomePropertyManagement\\Models\\AppDbContext.cs",
               "ToolTip": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\RTHomePropertyManagement\\Models\\AppDbContext.cs",
               "RelativeToolTip": "RTHomePropertyManagement\\Models\\AppDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAUAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-07-29T12:52:41.715Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "RTHomePropertyManagement",
               "DocumentMoniker": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\RTHomePropertyManagement\\RTHomePropertyManagement.csproj",
               "RelativeDocumentMoniker": "RTHomePropertyManagement\\RTHomePropertyManagement.csproj",
               "ToolTip": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\RTHomePropertyManagement\\RTHomePropertyManagement.csproj",
               "RelativeToolTip": "RTHomePropertyManagement\\RTHomePropertyManagement.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
               "WhenOpened": "2025-07-29T12:32:38.166Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\RTHomePropertyManagement\\Program.cs",
               "RelativeDocumentMoniker": "RTHomePropertyManagement\\Program.cs",
               "ToolTip": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\RTHomePropertyManagement\\Program.cs",
               "RelativeToolTip": "RTHomePropertyManagement\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAiAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAtwA0AAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-03-29T16:14:45.367Z",
               "EditorCaption": ""
