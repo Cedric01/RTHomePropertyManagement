@@ -17,6 +17,7 @@ builder.Services.AddIdentityApiEndpoints<AppUser>()
 
 builder.Services.AddDbContext<AppDbContext>(options => 
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -27,6 +28,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(policy =>
+{
+    policy.WithOrigins("http://localhost:4200")
+          .AllowAnyMethod()
+          .AllowAnyHeader();
+});
 app.UseHttpsRedirection();
 
 var summaries = new[]
@@ -67,7 +74,6 @@ app.MapPost("/api/signup", async (
         FullName = registrationModel.FullName
     };
     var result = await userManager.CreateAsync(newUser, registrationModel.Password);
-
     if(result.Succeeded)
       return Results.Ok(result);
     else
