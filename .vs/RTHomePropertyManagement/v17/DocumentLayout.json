@@ -42,20 +42,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 4,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "20250729205658_NameAddedInUserIdentity2.cs",
-              "DocumentMoniker": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\RTHomePropertyManagement\\Migrations\\20250729205658_NameAddedInUserIdentity2.cs",
-              "RelativeDocumentMoniker": "RTHomePropertyManagement\\Migrations\\20250729205658_NameAddedInUserIdentity2.cs",
-              "ToolTip": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\RTHomePropertyManagement\\Migrations\\20250729205658_NameAddedInUserIdentity2.cs",
-              "RelativeToolTip": "RTHomePropertyManagement\\Migrations\\20250729205658_NameAddedInUserIdentity2.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-29T20:56:59.396Z"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 7,
@@ -112,10 +100,22 @@
               "RelativeDocumentMoniker": "RTHomePropertyManagement\\Program.cs",
               "ToolTip": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\RTHomePropertyManagement\\Program.cs",
               "RelativeToolTip": "RTHomePropertyManagement\\Program.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAASwBMAAAAbAAAAAAAAAA==",
+              "ViewState": "AgIAAD8AAAAAAAAAAAAAAEUAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-03-29T16:14:45.367Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "20250729205658_NameAddedInUserIdentity2.cs",
+              "DocumentMoniker": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\RTHomePropertyManagement\\Migrations\\20250729205658_NameAddedInUserIdentity2.cs",
+              "RelativeDocumentMoniker": "RTHomePropertyManagement\\Migrations\\20250729205658_NameAddedInUserIdentity2.cs",
+              "ToolTip": "C:\\Users\\kehiy\\source\\repos\\RTHomePropertyManagement\\RTHomePropertyManagement\\Migrations\\20250729205658_NameAddedInUserIdentity2.cs",
+              "RelativeToolTip": "RTHomePropertyManagement\\Migrations\\20250729205658_NameAddedInUserIdentity2.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-29T20:56:59.396Z"
             },
             {
               "$type": "Document",
