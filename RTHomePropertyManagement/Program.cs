@@ -1,9 +1,23 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using RTHomePropertyManagement.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddIdentityApiEndpoints<AppUser>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddDbContext<AppDbContext>(options => 
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -14,6 +28,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(policy =>
+{
+    policy.WithOrigins("http://localhost:4200")
+          .AllowAnyMethod()
+          .AllowAnyHeader();
+});
 app.UseHttpsRedirection();
 
 var summaries = new[]
@@ -35,6 +55,31 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast")
 .WithOpenApi();
+
+app.MapGroup("/api")
+    .MapIdentityApi<AppUser>();
+    //.WithOpenApi()
+    //.WithTags("Identity");
+
+app.MapPost("/api/signup", async (
+    UserManager<AppUser> userManager,
+    [FromBody] UserRegistrationModel registrationModel
+
+    ) =>
+{
+    AppUser newUser = new AppUser
+    {
+        UserName = registrationModel.UserName,
+        Email = registrationModel.Email,
+        FullName = registrationModel.FullName,
+        UserType = registrationModel.UserType
+    };
+    var result = await userManager.CreateAsync(newUser, registrationModel.Password);
+    if(result.Succeeded)
+      return Results.Ok(result);
+    else
+        return Results.BadRequest(result.Errors.Select(e => e.Description));
+});
 
 app.Run();
 
