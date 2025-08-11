@@ -71,7 +71,8 @@ app.MapPost("/api/signup", async (
     {
         UserName = registrationModel.UserName,
         Email = registrationModel.Email,
-        FullName = registrationModel.FullName
+        FullName = registrationModel.FullName,
+        UserType = registrationModel.UserType
     };
     var result = await userManager.CreateAsync(newUser, registrationModel.Password);
     if(result.Succeeded)
