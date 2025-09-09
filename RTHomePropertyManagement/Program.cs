@@ -1,9 +1,13 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using RTHomePropertyManagement.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +22,19 @@ builder.Services.AddIdentityApiEndpoints<AppUser>()
 builder.Services.AddDbContext<AppDbContext>(options => 
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddCors();
+builder.Services.AddAuthentication( x =>
+{
+    x.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(y =>
+{
+    y.SaveToken = true;
+    y.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]!)),
+    };
+
+});
 
 var app = builder.Build();
 
@@ -27,6 +44,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseAuthentication();
 
 app.UseCors(policy =>
 {
@@ -79,6 +98,35 @@ app.MapPost("/api/signup", async (
       return Results.Ok(result);
     else
         return Results.BadRequest(result.Errors.Select(e => e.Description));
+});
+
+app.MapPost("/api/signin", async (UserManager<AppUser> userManager,
+    [FromBody] LoginModel loginModel) =>
+{
+    var user = await userManager.FindByEmailAsync(loginModel.UserName);
+    if(user != null && await userManager.CheckPasswordAsync(user, loginModel.Password))
+    {
+        var signInKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+            builder.Configuration["JWT:SecretKey"]!));
+
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim("UserId", user.Id.ToString())
+            }),
+            Expires = DateTime.UtcNow.AddMinutes(10),
+            SigningCredentials = new SigningCredentials(signInKey, SecurityAlgorithms.HmacSha256Signature)
+        };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+        var token = tokenHandler.WriteToken(securityToken);
+
+        return Results.Ok(token);
+    }
+    else
+        return Results.BadRequest(new {message = "UserName or password is incorrect"});
 });
 
 app.Run();
