@@ -1,6 +1,6 @@
 ﻿namespace RTHomePropertyManagement.Models;
 
-public class AppSettings
+public class JWT
 {
     public string JWTSecret { get; set; }
 }

@@ -41,7 +41,7 @@ public static class IdentityUserEndpoints
     private static async Task<IResult> SignIn(
         UserManager<AppUser> userManager,
             [FromBody] LoginModel loginModel,
-            IOptions<AppSettings> appSettings)
+            IOptions<JWT> appSettings)
     {
         var user = await userManager.FindByEmailAsync(loginModel.UserName);
         if (user != null && await userManager.CheckPasswordAsync(user, loginModel.Password))

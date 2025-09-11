@@ -44,7 +44,7 @@ public static class IdentityExtensions
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(
-                            config["AppSettings:JWTSecret"]!))
+                            config["JWT:JWTSecret"]!))
             };
         });
         return services;

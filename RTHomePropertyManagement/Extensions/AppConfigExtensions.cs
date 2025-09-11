@@ -19,7 +19,7 @@ public static class AppConfigExtensions
         this IServiceCollection services,
         IConfiguration config)
     {
-        services.Configure<AppSettings>(config.GetSection("AppSettings"));
+        services.Configure<JWT>(config.GetSection("JWT"));
         return services;
     }
 }
