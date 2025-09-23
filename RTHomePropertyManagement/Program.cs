@@ -32,4 +32,6 @@ app.MapGroup("/api")
    .MapIdentityApi<AppUser>();
 app.MapGroup("/api")
    .MapIdentityUserEndpoints();
+app.MapGroup("/api")
+    .MapPropertyEndpoints();
 app.Run();

@@ -482,3 +482,8 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+/.vs/RTHomePropertyManagement/v17/.suo
+/RTHomePropertyManagement/obj/project.assets.json
+/RTHomePropertyManagement/obj/project.nuget.cache
+/RTHomePropertyManagement/obj/RTHomePropertyManagement.csproj.nuget.dgspec.json
+/RTHomePropertyManagement/obj/RTHomePropertyManagement.csproj.nuget.g.props
