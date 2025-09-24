@@ -487,3 +487,6 @@ $RECYCLE.BIN/
 /RTHomePropertyManagement/obj/project.nuget.cache
 /RTHomePropertyManagement/obj/RTHomePropertyManagement.csproj.nuget.dgspec.json
 /RTHomePropertyManagement/obj/RTHomePropertyManagement.csproj.nuget.g.props
+/.vs/RTHomePropertyManagement/DesignTimeBuild/.dtbcache.v2
+/.vs/RTHomePropertyManagement/v17/.futdcache.v2
+/.vs/RTHomePropertyManagement/v17/DocumentLayout.json
