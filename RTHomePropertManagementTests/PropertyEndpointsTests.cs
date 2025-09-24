@@ -20,6 +20,7 @@ public class PropertyEndpointsTests
     public async Task CreateProperty_ShouldReturnOkResult_WithCreatedProperty()
     {
         // Arrange
+
         var property = new Property { Title = "Test", Description = "Desc", Price = 100, Bedrooms = 2, Bathrooms = 1 };
         var mockSet = new Mock<DbSet<Property>>();
         var mockContext = new Mock<AppDbContext>(new DbContextOptions<AppDbContext>());
