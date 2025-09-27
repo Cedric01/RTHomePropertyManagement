@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RTHomePropertyManagement.Models;
+﻿using RTHomePropertyManagement.Models;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("RTHomePropertManagementTests")]
