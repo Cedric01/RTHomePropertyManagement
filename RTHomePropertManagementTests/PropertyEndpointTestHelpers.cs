@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using RTHomePropertyManagement.Controllers;
 using RTHomePropertyManagement.Models;
 
-namespace RTHomePropertManagementTests;
+namespace RTHomePropertyManagementTests;
 
 public static class PropertyEndpointTestHelpers
 {

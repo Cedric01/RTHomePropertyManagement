@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using RTHomePropertyManagement.Controllers;
 using RTHomePropertyManagement.Models;
+using RTHomePropertyManagementTests;
 
 namespace RTHomePropertManagementTests;
 

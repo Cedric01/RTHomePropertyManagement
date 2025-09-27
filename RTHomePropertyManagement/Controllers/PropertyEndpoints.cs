@@ -16,7 +16,7 @@ public static class PropertyEndpoints
         return app;
     }
 
-    internal static async Task<IResult> CreateProperty(
+    public static async Task<IResult> CreateProperty(
         IPropertyRepository repository,
         Property property)
     {
@@ -24,14 +24,14 @@ public static class PropertyEndpoints
         return Results.Ok(created);
     }
 
-    internal static async Task<IResult> ListProperties(
+    public static async Task<IResult> ListProperties(
         IPropertyRepository repository)
     {
         var properties = await repository.GetAllAsync();
         return Results.Ok(properties);
     }
 
-    internal static async Task<IResult> UpdateProperty(
+    public static async Task<IResult> UpdateProperty(
         IPropertyRepository repository,
         int id,
         Property updatedProperty)
@@ -43,7 +43,7 @@ public static class PropertyEndpoints
         return Results.Ok(updated);
     }
 
-    internal static async Task<IResult> DeleteProperty(
+    public static async Task<IResult> DeleteProperty(
         IPropertyRepository repository,
         int id)
     {
