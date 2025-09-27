@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RTHomePropertyManagement.Models;
-using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("RTHomePropertManagementTests")]
 
 namespace RTHomePropertyManagement.Controllers;
 
@@ -15,55 +17,41 @@ public static class PropertyEndpoints
         return app;
     }
 
-    private static async Task<IResult> CreateProperty(
-        [FromServices] AppDbContext dbContext,
-        [FromBody] Property property)
+    internal static async Task<IResult> CreateProperty(
+        IPropertyRepository repository,
+        Property property)
     {
-        dbContext.Add(property);
-        await dbContext.SaveChangesAsync();
-        return Results.Ok(property);
+        var created = await repository.CreateAsync(property);
+        return Results.Ok(created);
     }
 
-    private static async Task<IResult> ListProperties(
-        [FromServices] AppDbContext dbContext)
+    internal static async Task<IResult> ListProperties(
+        IPropertyRepository repository)
     {
-        var properties = await dbContext.Properties.ToListAsync();
+        var properties = await repository.GetAllAsync();
         return Results.Ok(properties);
     }
 
-    private static async Task<IResult> UpdateProperty(
-        [FromServices] AppDbContext dbContext,
-        [FromRoute] int id,
-        [FromBody] Property updatedProperty)
+    internal static async Task<IResult> UpdateProperty(
+        IPropertyRepository repository,
+        int id,
+        Property updatedProperty)
     {
-        var property = await dbContext.Properties.FindAsync(id);
-        if (property is null)
+        var updated = await repository.UpdateAsync(id, updatedProperty);
+        if (updated is null)
             return Results.NotFound();
 
-        property = property with
-        {
-            Title = updatedProperty.Title,
-            Description = updatedProperty.Description,
-            Price = updatedProperty.Price,
-            Bedrooms = updatedProperty.Bedrooms,
-            Bathrooms = updatedProperty.Bathrooms
-        };
-
-        dbContext.Entry(property).State = EntityState.Modified;
-        await dbContext.SaveChangesAsync();
-        return Results.Ok(property);
+        return Results.Ok(updated);
     }
 
-    private static async Task<IResult> DeleteProperty(
-        [FromServices] AppDbContext dbContext,
-        [FromRoute] int id)
+    internal static async Task<IResult> DeleteProperty(
+        IPropertyRepository repository,
+        int id)
     {
-        var property = await dbContext.Properties.FindAsync(id);
-        if (property is null)
+        var deleted = await repository.DeleteAsync(id);
+        if (!deleted)
             return Results.NotFound();
 
-        dbContext.Properties.Remove(property);
-        await dbContext.SaveChangesAsync();
         return Results.NoContent();
     }
 }
