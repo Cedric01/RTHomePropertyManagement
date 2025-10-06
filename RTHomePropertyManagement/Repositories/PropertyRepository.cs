@@ -34,11 +34,13 @@ public class PropertyRepository : IPropertyRepository
 
         property = property with
         {
-            Title = updatedProperty.Title,
-            Description = updatedProperty.Description,
-            Price = updatedProperty.Price,
-            Bedrooms = updatedProperty.Bedrooms,
-            Bathrooms = updatedProperty.Bathrooms
+            Name = updatedProperty.Name,
+            City = updatedProperty.City,
+            State = updatedProperty.State,
+            Photo = updatedProperty.Photo,
+            AvailableUnits = updatedProperty.AvailableUnits,
+            Wifi = updatedProperty.Wifi,
+            Laundry = updatedProperty.Laundry
         };
 
         _dbContext.Entry(property).State = EntityState.Modified;
