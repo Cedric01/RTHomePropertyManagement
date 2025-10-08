@@ -14,6 +14,8 @@ builder.Services.AddSwaggerExplorer()
                 .ConfigureIdentityOptions()
                 .AddIdentityAuth(builder.Configuration);
 
+builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
+
 
 var app = builder.Build();
 
