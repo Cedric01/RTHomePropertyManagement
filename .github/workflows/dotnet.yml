@@ -28,6 +28,9 @@ jobs:
     - name: Test
       run: dotnet test --no-build --configuration Release --verbosity normal
 
+    - name: Publish
+      run: dotnet publish --configuration Release --output ./publish --no-build
+
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
