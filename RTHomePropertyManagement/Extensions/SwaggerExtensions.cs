@@ -14,7 +14,7 @@ public static class SwaggerExtensions
     public static WebApplication ConfigureSwaggerExplorer(this WebApplication app)
     {
         // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
+        if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
