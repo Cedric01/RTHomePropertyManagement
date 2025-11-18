@@ -9,4 +9,5 @@ public class AppDbContext : IdentityDbContext
     { }
 
     public virtual DbSet<Property> Properties { get; set; } // Make this virtual
+    public virtual DbSet<PropertyListing> PropertiesListing { get; set; }
 }

@@ -22,6 +22,11 @@ public class PropertyRepository : IPropertyRepository
         return await _dbContext.Properties.ToListAsync();
     }
 
+    public async Task<List<PropertyListing>> GetAllListingPropertiesAsync()
+    {
+        return await _dbContext.PropertiesListing.ToListAsync();
+    }
+
     public async Task<Property?> GetByIdAsync(int id)
     {
         return await _dbContext.Properties.FindAsync(id);

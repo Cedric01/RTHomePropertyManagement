@@ -11,6 +11,7 @@ public static class PropertyEndpoints
     {
         app.MapPost("/createproperty", CreateProperty);
         app.MapGet("/getproperties", ListProperties);
+        app.MapGet("/listingproperties", ListingProperties);
         app.MapPut("/properties/{id}", UpdateProperty);
         app.MapDelete("/properties/{id}", DeleteProperty);
         return app;
@@ -28,6 +29,13 @@ public static class PropertyEndpoints
         IPropertyRepository repository)
     {
         var properties = await repository.GetAllAsync();
+        return Results.Ok(properties);
+    }
+
+    public static async Task<IResult> ListingProperties(
+    IPropertyRepository repository)
+    {
+        var properties = await repository.GetAllListingPropertiesAsync();
         return Results.Ok(properties);
     }
 
