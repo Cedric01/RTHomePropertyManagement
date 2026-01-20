@@ -18,6 +18,7 @@ public static class EFCoreExtensions
                 config.GetConnectionString("Postgres"),
                 x => x.EnableRetryOnFailure());
         });
+
         return services;
     }
 }
