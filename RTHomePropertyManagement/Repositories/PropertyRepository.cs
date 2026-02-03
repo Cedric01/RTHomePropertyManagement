@@ -3,9 +3,9 @@ using RTHomePropertyManagement.Models;
 
 public class PropertyRepository : IPropertyRepository
 {
-    private readonly AppDbContext _dbContext;
+    private readonly RealEstateDbContext _dbContext;
 
-    public PropertyRepository(AppDbContext dbContext)
+    public PropertyRepository(RealEstateDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -32,16 +32,22 @@ public class PropertyRepository : IPropertyRepository
         var property = await _dbContext.Properties.FindAsync(id);
         if (property is null) return null;
 
-        property = property with
-        {
-            Name = updatedProperty.Name,
-            City = updatedProperty.City,
-            State = updatedProperty.State,
-            Photo = updatedProperty.Photo,
-            AvailableUnits = updatedProperty.AvailableUnits,
-            Wifi = updatedProperty.Wifi,
-            Laundry = updatedProperty.Laundry
-        };
+            property.Title = updatedProperty.Title;
+            property.Address = updatedProperty.Address;
+
+            property.LocationId = updatedProperty.LocationId;
+            property.ListingTypeId = updatedProperty.ListingTypeId;
+            property.AgentId = updatedProperty.AgentId;
+
+            property.IsForRent = updatedProperty.IsForRent;
+            property.Price = updatedProperty.Price;
+            property.PricePeriod = updatedProperty.PricePeriod;
+
+            property.SquareFeet = updatedProperty.SquareFeet;
+            property.Bedrooms = updatedProperty.Bedrooms;
+            property.Bathrooms = updatedProperty.Bathrooms;
+
+            property.Status = updatedProperty.Status;
 
         _dbContext.Entry(property).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();

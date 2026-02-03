@@ -11,6 +11,14 @@ public static class EFCoreExtensions
     {
         services.AddDbContext<AppDbContext>(options =>
                  options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
+
+        services.AddDbContext<RealEstateDbContext>(options =>
+        {
+            options.UseNpgsql(
+                config.GetConnectionString("Postgres"),
+                x => x.EnableRetryOnFailure());
+        });
+
         return services;
     }
 }

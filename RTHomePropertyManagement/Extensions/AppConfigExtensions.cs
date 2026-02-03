@@ -9,7 +9,7 @@ public static class AppConfigExtensions
         IConfiguration config)
     {
         app.UseCors(options =>
-        options.WithOrigins("http://localhost:4200")
+        options.WithOrigins("http://localhost:4200", "https://orange-rock-0f996da0f-1.eastus2.2.azurestaticapps.net")
         .AllowAnyMethod()
         .AllowAnyHeader());
         return app;
