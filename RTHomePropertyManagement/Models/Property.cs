@@ -39,6 +39,9 @@ public class Property
     [Column("agent_id")]
     public int? AgentId { get; set; }
 
+    [Column("price_range_id")]
+    public int? PriceRangeId { get; set; }
+
     // --------------------------------------------------
     // Listing Details
     // --------------------------------------------------
@@ -86,4 +89,6 @@ public class Property
     public Location? Location { get; set; }
     public ListingType? ListingType { get; set; }
     public Agent? Agent { get; set; }
+
+    public PriceRange PriceRange { get; set; }
 }

@@ -14,11 +14,14 @@ public static class SwaggerExtensions
     public static WebApplication ConfigureSwaggerExplorer(this WebApplication app)
     {
         // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
         {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+            // Ensure this path matches the document name above
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "RT Home Property Management API v1");
+            // Optional: keep default route '/swagger'. To serve at app root, set RoutePrefix = string.Empty;
+            // c.RoutePrefix = string.Empty;
+        });
         return app;
     }
 

@@ -15,6 +15,8 @@ public class RealEstateDbContext : DbContext
     public DbSet<Location> Locations => Set<Location>();
     public DbSet<ListingType> ListingTypes => Set<ListingType>();
 
+    public DbSet<PriceRange> PriceRanges => Set<PriceRange>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("core");
@@ -33,6 +35,12 @@ public class RealEstateDbContext : DbContext
             .HasOne(p => p.Location)
             .WithMany(l => l.Properties)
             .HasForeignKey(p => p.LocationId);
+
+        modelBuilder.Entity<Property>()
+        .HasOne(p => p.PriceRange)
+        .WithMany(l => l.Properties)
+        .HasForeignKey(p => p.PriceRangeId);
+
 
         base.OnModelCreating(modelBuilder);
     }

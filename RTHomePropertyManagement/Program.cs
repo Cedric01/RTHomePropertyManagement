@@ -17,6 +17,8 @@ builder.Services.AddSwaggerExplorer()
 
 builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+builder.Services.AddScoped<IPriceRangeRepository, PriceRangeRepository>();
+
 
 
 
@@ -41,4 +43,7 @@ app.MapGroup("/api")
     .MapPropertyEndpoints();
 app.MapGroup("/api")
     .MapLocationEndpoints();
+app.MapGroup("/api")
+    .MapPriceRangeEndpoints();
+
 app.Run();
