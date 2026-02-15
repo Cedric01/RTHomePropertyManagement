@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using RTHomePropertyManagement.Controllers;
 using RTHomePropertyManagement.Models;
+using RTHomePropertyManagement.DTOs;
+using RTHomePropertyManagement.Extensions;
 using RTHomePropertyManagementTests;
 
 namespace RTHomePropertManagementTests;
@@ -44,9 +47,9 @@ public class PropertyEndpointsTests
             .InvokeCreateProperty(mockRepo.Object, property);
 
         // Assert
-        result.Should().BeOfType<Ok<Property>>();
-        var okResult = result as Ok<Property>;
-        okResult!.Value.Should().BeEquivalentTo(property);
+        result.Should().BeOfType<Ok<PropertyDto>>();
+        var okResult = result as Ok<PropertyDto>;
+        okResult!.Value.Should().BeEquivalentTo(property.ToDto());
     }
 
     [Fact]
@@ -101,15 +104,32 @@ public class PropertyEndpointsTests
             .InvokeListProperties(mockRepo.Object);
 
         // Assert
-        result.Should().BeOfType<Ok<List<Property>>>();
-        var okResult = result as Ok<List<Property>>;
-        okResult!.Value.Should().BeEquivalentTo(properties);
+        result.Should().BeOfType<Ok<List<PropertyDto>>>();
+        var okResult = result as Ok<List<PropertyDto>>;
+        okResult!.Value.Should().BeEquivalentTo(properties.Select(p => p.ToDto()).ToList());
     }
 
     [Fact]
     public async Task UpdateProperty_ShouldReturnOkResult_WhenPropertyExists()
     {
         // Arrange
+        var existing = new Property
+        {
+            Id = 1,
+            Title = "Old Apartment",
+            Address = "123 Main St",
+            LocationId = 1,
+            ListingTypeId = 1,
+            AgentId = 1,
+            IsForRent = true,
+            Price = 1800.00m,
+            PricePeriod = "month",
+            SquareFeet = 900,
+            Bedrooms = 2,
+            Bathrooms = 1,
+            Status = "ACTIVE"
+        };
+
         var updated = new Property
         {
             Id = 1,
@@ -131,8 +151,11 @@ public class PropertyEndpointsTests
         };
 
         var mockRepo = new Mock<IPropertyRepository>();
+        // Endpoint calls GetByIdAsync first
+        mockRepo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(existing);
+        // Then it calls UpdateAsync with the modified entity — accept any Property
         mockRepo
-            .Setup(r => r.UpdateAsync(1, updated))
+            .Setup(r => r.UpdateAsync(1, It.IsAny<Property>()))
             .ReturnsAsync(updated);
 
         // Act
@@ -140,9 +163,9 @@ public class PropertyEndpointsTests
             .InvokeUpdateProperty(mockRepo.Object, 1, updated);
 
         // Assert
-        result.Should().BeOfType<Ok<Property>>();
-        var okResult = result as Ok<Property>;
-        okResult!.Value.Should().BeEquivalentTo(updated);
+        result.Should().BeOfType<Ok<PropertyDto>>();
+        var okResult = result as Ok<PropertyDto>;
+        okResult!.Value.Should().BeEquivalentTo(updated.ToDto());
     }
 
     [Fact]
@@ -165,8 +188,10 @@ public class PropertyEndpointsTests
         };
 
         var mockRepo = new Mock<IPropertyRepository>();
+        // No existing entity
+        mockRepo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync((Property?)null);
         mockRepo
-            .Setup(r => r.UpdateAsync(1, updated))
+            .Setup(r => r.UpdateAsync(1, It.IsAny<Property>()))
             .ReturnsAsync((Property?)null);
 
         // Act
