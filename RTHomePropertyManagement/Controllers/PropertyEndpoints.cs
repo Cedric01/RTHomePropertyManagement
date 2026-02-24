@@ -11,8 +11,8 @@ public static class PropertyEndpoints
 {
     public static IEndpointRouteBuilder MapPropertyEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapPost("/createproperty", CreateProperty);
-        app.MapGet("/getproperties", ListProperties);
+        app.MapGet("/properties", ListProperties);
+        app.MapPost("/properties", CreateProperty);
         app.MapPut("/properties/{id}", UpdateProperty);
         app.MapDelete("/properties/{id}", DeleteProperty);
         return app;

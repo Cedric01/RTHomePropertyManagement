@@ -33,4 +33,7 @@ public class PropertyDto
     // Status & audit
     public string Status { get; set; } = "ACTIVE";
     public DateTime CreatedAt { get; set; }
+
+    // Images
+    public List<string> ImageUrls { get; set; } = new();
 }

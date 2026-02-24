@@ -40,7 +40,11 @@ public static class MappingExtensions
                 MinPrice = p.PriceRange.MinPrice,
                 MaxPrice = p.PriceRange.MaxPrice,
                 DisplayLabel = p.PriceRange.DisplayLabel
-            } : null
+            } : null,
+            ImageUrls = p.Images
+                .OrderBy(i => i.SortOrder)
+                .Select(i => i.ImageUrl)
+                .ToList()
         };
     }
 
