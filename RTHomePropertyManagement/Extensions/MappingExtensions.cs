@@ -67,7 +67,6 @@ public static class MappingExtensions
             Bedrooms = dto.Bedrooms,
             Bathrooms = dto.Bathrooms,
             Status = dto.Status ?? "ACTIVE"
-            // CreatedAt will default to UTC now as defined on the model
         };
     }
 
