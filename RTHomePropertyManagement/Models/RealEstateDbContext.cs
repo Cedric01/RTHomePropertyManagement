@@ -14,8 +14,8 @@ public class RealEstateDbContext : DbContext
     public DbSet<Agent> Agents => Set<Agent>();
     public DbSet<Location> Locations => Set<Location>();
     public DbSet<ListingType> ListingTypes => Set<ListingType>();
-
     public DbSet<PriceRange> PriceRanges => Set<PriceRange>();
+    public DbSet<PropertyImage> PropertyImages => Set<PropertyImage>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -37,10 +37,15 @@ public class RealEstateDbContext : DbContext
             .HasForeignKey(p => p.LocationId);
 
         modelBuilder.Entity<Property>()
-        .HasOne(p => p.PriceRange)
-        .WithMany(l => l.Properties)
-        .HasForeignKey(p => p.PriceRangeId);
+            .HasOne(p => p.PriceRange)
+            .WithMany(l => l.Properties)
+            .HasForeignKey(p => p.PriceRangeId);
 
+        modelBuilder.Entity<PropertyImage>()
+            .HasOne(pi => pi.Property)
+            .WithMany(p => p.Images)
+            .HasForeignKey(pi => pi.PropertyId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         base.OnModelCreating(modelBuilder);
     }

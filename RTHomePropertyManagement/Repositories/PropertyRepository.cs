@@ -19,12 +19,21 @@ public class PropertyRepository : IPropertyRepository
 
     public async Task<List<Property>> GetAllAsync()
     {
-        return await _dbContext.Properties.ToListAsync();
+        return await _dbContext.Properties
+            .Include(p => p.Location)
+            .Include(p => p.PriceRange)
+            .Include(p => p.Images)
+            .OrderByDescending(p => p.CreatedAt)
+            .ToListAsync();
     }
 
     public async Task<Property?> GetByIdAsync(int id)
     {
-        return await _dbContext.Properties.FindAsync(id);
+        return await _dbContext.Properties
+            .Include(p => p.Location)
+            .Include(p => p.PriceRange)
+            .Include(p => p.Images)
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<Property?> UpdateAsync(int id, Property updatedProperty)

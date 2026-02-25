@@ -89,6 +89,6 @@ public class Property
     public Location? Location { get; set; }
     public ListingType? ListingType { get; set; }
     public Agent? Agent { get; set; }
-
     public PriceRange PriceRange { get; set; }
+    public ICollection<PropertyImage> Images { get; set; } = new List<PropertyImage>();
 }
