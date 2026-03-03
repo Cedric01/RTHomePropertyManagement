@@ -1,8 +1,16 @@
+using Azure.Identity;
 using RTHomePropertyManagement.Controllers;
 using RTHomePropertyManagement.Extensions;
 using RTHomePropertyManagement.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+if (!builder.Environment.IsDevelopment())
+{
+    var keyVaultUri = builder.Configuration["KeyVaultUri"];
+    if (!string.IsNullOrEmpty(keyVaultUri))
+        builder.Configuration.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
+}
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
