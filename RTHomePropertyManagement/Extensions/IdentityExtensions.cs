@@ -1,52 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using RTHomePropertyManagement.Models;
-using System.Text;
 
 namespace RTHomePropertyManagement.Extensions;
 
 public static class IdentityExtensions
 {
-    public static IServiceCollection AddIdentityHandlersAndStores(this IServiceCollection services)
-    {
-        services.AddIdentityApiEndpoints<AppUser>()
-                .AddEntityFrameworkStores<AppDbContext>();
-        return services;
-    }
-
-    public static IServiceCollection ConfigureIdentityOptions(this IServiceCollection services)
-    {
-        services.Configure<IdentityOptions>(options =>
-        {
-            options.Password.RequireDigit = false;
-            options.Password.RequireUppercase = false;
-            options.Password.RequireLowercase = false;
-            options.User.RequireUniqueEmail = true;
-        });
-        return services;
-    }
-
     public static IServiceCollection AddIdentityAuth(
         this IServiceCollection services,
         IConfiguration config)
     {
-        services.AddAuthentication(x =>
-        {
-            x.DefaultAuthenticateScheme =
-            x.DefaultChallengeScheme =
-            x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(y =>
-        {
-            y.SaveToken = false;
-            y.TokenValidationParameters = new TokenValidationParameters
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(
-                            config["JWT:JWTSecret"]!))
-            };
-        });
+                options.Authority = $"https://{config["Auth0:Domain"]}/";
+                options.Audience = config["Auth0:Audience"];
+            });
         return services;
     }
 
@@ -56,5 +23,4 @@ public static class IdentityExtensions
         app.UseAuthorization();
         return app;
     }
-
 }
