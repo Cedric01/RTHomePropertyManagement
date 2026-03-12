@@ -188,6 +188,7 @@ All secrets are configured under **Settings → Secrets and variables → Action
 |---|---|
 | `AZURE_CREDENTIALS` | Service principal JSON for Azure login (existing) |
 | `AZURE_RESOURCE_GROUP` | Azure resource group containing the App Service |
+| `AZURE_LOCATION` | Azure region for the Key Vault (e.g. `uksouth`, `eastus`) — must match the region of any existing Key Vault |
 | `AZURE_APP_NAME` | Azure App Service name |
 | `KEY_VAULT_NAME` | Desired Key Vault name (3–24 chars, alphanumeric + hyphens, globally unique) |
 | `DB_CONNECTION_STRING` | PostgreSQL connection string |
