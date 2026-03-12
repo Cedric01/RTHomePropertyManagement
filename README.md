@@ -118,6 +118,18 @@ The App Service uses a **system-assigned managed identity** to authenticate to K
 
 `Key Vault Secrets User` grants read-only access to secret values — the minimum permission needed.
 
+### Populating secrets (one-time manual step)
+
+Secrets are added to Key Vault once manually. The CI/CD pipeline does **not** manage secret values — it only provisions the vault, configures access, and sets the `KeyVaultUri` app setting. This keeps the pipeline read-only against the vault and avoids unnecessary write permissions.
+
+```bash
+az keyvault secret set --vault-name <KEY_VAULT_NAME> --name "ConnectionStrings--Postgres" --value "<value>"
+az keyvault secret set --vault-name <KEY_VAULT_NAME> --name "Auth0--Domain" --value "<value>"
+az keyvault secret set --vault-name <KEY_VAULT_NAME> --name "Auth0--Audience" --value "<value>"
+```
+
+To update a secret in future, run the relevant command above manually (or via a separate, access-controlled workflow).
+
 ### Manual setup (if not using CI/CD)
 
 If you need to set this up manually in Azure:
@@ -191,8 +203,5 @@ All secrets are configured under **Settings → Secrets and variables → Action
 | `AZURE_LOCATION` | Azure region for the Key Vault (e.g. `uksouth`, `eastus`) — must match the region of any existing Key Vault |
 | `AZURE_APP_NAME` | Azure App Service name |
 | `KEY_VAULT_NAME` | Desired Key Vault name (3–24 chars, alphanumeric + hyphens, globally unique) |
-| `DB_CONNECTION_STRING` | PostgreSQL connection string |
-| `AUTH0_DOMAIN` | Auth0 domain (e.g. `dev-xxx.us.auth0.com`) |
-| `AUTH0_AUDIENCE` | Auth0 audience (e.g. `https://homy-api`) |
 | `DOCKERHUB_USERNAME` | Docker Hub username (existing) |
 | `DOCKERHUB_TOKEN` | Docker Hub access token (existing) |
