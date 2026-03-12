@@ -58,13 +58,69 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
     - name: Azure login
       uses: azure/login@v2
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+    - name: Deploy Key Vault infrastructure
+      run: |
+        az deployment group create \
+          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+          --template-file infra/keyvault.bicep \
+          --parameters keyVaultName=${{ secrets.KEY_VAULT_NAME }}
+
+    - name: Enable managed identity on App Service
+      run: |
+        PRINCIPAL_ID=$(az webapp identity assign \
+          --name ${{ secrets.AZURE_APP_NAME }} \
+          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+          --query principalId -o tsv)
+        echo "PRINCIPAL_ID=$PRINCIPAL_ID" >> $GITHUB_ENV
+
+    - name: Assign Key Vault Secrets User role to App Service identity
+      run: |
+        KEY_VAULT_ID=$(az keyvault show \
+          --name ${{ secrets.KEY_VAULT_NAME }} \
+          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+          --query id -o tsv)
+        az role assignment create \
+          --role "Key Vault Secrets User" \
+          --assignee $PRINCIPAL_ID \
+          --scope $KEY_VAULT_ID \
+          2>/dev/null || echo "Role assignment already exists"
+
+    - name: Populate Key Vault secrets
+      run: |
+        az keyvault secret set \
+          --vault-name ${{ secrets.KEY_VAULT_NAME }} \
+          --name "ConnectionStrings--Postgres" \
+          --value "${{ secrets.DB_CONNECTION_STRING }}"
+        az keyvault secret set \
+          --vault-name ${{ secrets.KEY_VAULT_NAME }} \
+          --name "Auth0--Domain" \
+          --value "${{ secrets.AUTH0_DOMAIN }}"
+        az keyvault secret set \
+          --vault-name ${{ secrets.KEY_VAULT_NAME }} \
+          --name "Auth0--Audience" \
+          --value "${{ secrets.AUTH0_AUDIENCE }}"
+
+    - name: Configure App Service with Key Vault URI
+      run: |
+        KEY_VAULT_URI=$(az keyvault show \
+          --name ${{ secrets.KEY_VAULT_NAME }} \
+          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+          --query properties.vaultUri -o tsv)
+        az webapp config appsettings set \
+          --name ${{ secrets.AZURE_APP_NAME }} \
+          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+          --settings KeyVaultUri=$KEY_VAULT_URI
+
     - name: Deploy to Azure App Service
       uses: azure/webapps-deploy@v3
       with:
-        app-name: RTHomePropertyManagement
+        app-name: ${{ secrets.AZURE_APP_NAME }}
         images: ${{ secrets.DOCKERHUB_USERNAME }}/rthomepropertymanagement:latest
