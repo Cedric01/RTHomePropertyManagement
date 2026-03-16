@@ -9,6 +9,8 @@ A .NET 9 REST API for managing real estate property listings, built with ASP.NET
 - [Project Structure](#project-structure)
 - [Local Development](#local-development)
 - [Infrastructure — Azure Key Vault](#infrastructure--azure-key-vault)
+- [Observability — OpenTelemetry & Application Insights](#observability--opentelemetry--application-insights)
+- [Error Handling](#error-handling)
 - [CI/CD Pipeline](#cicd-pipeline)
 - [GitHub Secrets Reference](#github-secrets-reference)
 
@@ -167,6 +169,104 @@ az webapp config appsettings set \
 
 ---
 
+## Observability — OpenTelemetry & Application Insights
+
+The app uses the [Azure Monitor OpenTelemetry distro](https://learn.microsoft.com/en-us/azure/azure-monitor/app/opentelemetry-enable) (`Azure.Monitor.OpenTelemetry.AspNetCore`), which is Microsoft's recommended approach for new .NET projects. It bundles the full OpenTelemetry SDK and exports to Azure Application Insights.
+
+### What gets collected automatically
+
+| Signal | Examples |
+|---|---|
+| **Traces** | Incoming HTTP requests, outgoing HTTP calls, EF Core queries |
+| **Metrics** | Request rate, failure rate, response duration |
+| **Logs** | All `ILogger` output correlated to the active trace |
+
+All three signals are correlated by trace ID, so you can go from a failed request in Application Insights directly to the EF Core query that caused it.
+
+### Configuration
+
+The connection string is stored in Azure Key Vault as `ApplicationInsights--ConnectionString` and is read in [Program.cs](RTHomePropertyManagement/Program.cs):
+
+```csharp
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource => resource
+        .AddService(serviceName: "RTHomePropertyManagement", serviceVersion: "..."))
+    .UseAzureMonitor(options =>
+    {
+        options.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
+        options.SamplingRatio = builder.Configuration.GetValue<float>("OpenTelemetry:SamplingRatio", 1.0f);
+    })
+    .WithTracing(tracing => tracing.AddSource("Npgsql"));
+```
+
+If the connection string is absent (e.g. local dev without it set), OpenTelemetry initialises but exports nowhere — no errors, no noise.
+
+### Resource attributes
+
+Every span and metric is tagged with the service name (`RTHomePropertyManagement`) and assembly version. In Application Insights this appears as the **Cloud role name**, making it easy to filter telemetry if multiple services share the same resource.
+
+### Sampling
+
+Sampling is controlled by `OpenTelemetry:SamplingRatio` in config — a float between `0.0` and `1.0`. It defaults to `1.0` (100%) in `appsettings.json`.
+
+For production, add to Key Vault:
+
+```bash
+az keyvault secret set \
+  --vault-name <KEY_VAULT_NAME> \
+  --name "OpenTelemetry--SamplingRatio" \
+  --value "0.2"
+```
+
+`0.2` sends 20% of traces — a reasonable starting point for a low-to-medium traffic API. Adjust based on volume and Application Insights ingestion cost.
+
+### Postgres query tracing
+
+The Npgsql activity source is explicitly registered so PostgreSQL query spans appear in the trace waterfall alongside the HTTP request and EF Core operations. This makes it easy to spot slow queries directly from a failing request trace.
+
+### Adding the Application Insights connection string to Key Vault
+
+```bash
+az keyvault secret set \
+  --vault-name <KEY_VAULT_NAME> \
+  --name "ApplicationInsights--ConnectionString" \
+  --value "<connection-string-from-azure-portal>"
+```
+
+Find the connection string in the Azure Portal under your Application Insights resource → **Overview** → **Connection String**.
+
+### Local development
+
+To see traces locally, set the connection string in user-secrets:
+
+```bash
+dotnet user-secrets set "ApplicationInsights:ConnectionString" "<your-connection-string>"
+```
+
+Or leave it unset — the app starts fine without it.
+
+---
+
+## Error Handling
+
+All unhandled exceptions are caught by `UseExceptionHandler()` middleware and returned as [RFC 7807 Problem Details](https://www.rfc-editor.org/rfc/rfc7807) JSON, registered via `AddProblemDetails()` in [Program.cs](RTHomePropertyManagement/Program.cs).
+
+**Example error response:**
+
+```json
+{
+  "type": "https://tools.ietf.org/html/rfc9110#section-15.6.1",
+  "title": "An error occurred while processing your request.",
+  "status": 500
+}
+```
+
+- In **Development**: the response includes the exception message and stack trace
+- In **Production**: a safe, generic message is returned — no internal details leaked
+- OpenTelemetry automatically captures the exception as part of the failed request trace
+
+---
+
 ## CI/CD Pipeline
 
 The pipeline at [.github/workflows/dotnet.yml](.github/workflows/dotnet.yml) has three jobs:
@@ -204,4 +304,13 @@ All secrets are configured under **Settings → Secrets and variables → Action
 | `AZURE_APP_NAME` | Azure App Service name |
 | `KEY_VAULT_NAME` | Desired Key Vault name (3–24 chars, alphanumeric + hyphens, globally unique) |
 | `DOCKERHUB_USERNAME` | Docker Hub username (existing) |
+
+**Key Vault secrets (set once manually):**
+
+| Secret Name in Key Vault | Maps to config key |
+|---|---|
+| `ConnectionStrings--Postgres` | `ConnectionStrings:Postgres` |
+| `Auth0--Domain` | `Auth0:Domain` |
+| `Auth0--Audience` | `Auth0:Audience` |
+| `ApplicationInsights--ConnectionString` | `ApplicationInsights:ConnectionString` |
 | `DOCKERHUB_TOKEN` | Docker Hub access token (existing) |
