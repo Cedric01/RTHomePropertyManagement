@@ -1,7 +1,10 @@
 using Azure.Identity;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
+using OpenTelemetry.Resources;
 using RTHomePropertyManagement.Controllers;
 using RTHomePropertyManagement.Extensions;
 using RTHomePropertyManagement.Repositories;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +15,22 @@ if (!builder.Environment.IsDevelopment())
         builder.Configuration.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
 }
 
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource => resource
+        .AddService(
+            serviceName: "RTHomePropertyManagement",
+            serviceVersion: Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.0.0"
+        ))
+    .UseAzureMonitor(options =>
+    {
+        options.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
+        options.SamplingRatio = builder.Configuration.GetValue<float>("OpenTelemetry:SamplingRatio", 1.0f);
+    })
+    .WithTracing(tracing => tracing.AddSource("Npgsql"));
+
+builder.Services.AddProblemDetails();
+
 // Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
 builder.Services.AddSwaggerExplorer()
                 .InjectDbContext(builder.Configuration)
@@ -29,6 +46,8 @@ builder.Services.AddScoped<IListingTypeRepository, ListingTypeRepository>();
 
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 app.ConfigureSwaggerExplorer()
    .ConfigureCORS(builder.Configuration)
