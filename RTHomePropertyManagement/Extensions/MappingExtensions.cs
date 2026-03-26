@@ -15,6 +15,7 @@ public static class MappingExtensions
             Id = p.Id,
             Title = p.Title,
             Address = p.Address,
+            Description = p.Description,
             LocationId = p.LocationId,
             ListingTypeId = p.ListingTypeId,
             AgentId = p.AgentId,
@@ -56,6 +57,7 @@ public static class MappingExtensions
         {
             Title = dto.Title,
             Address = dto.Address,
+            Description = dto.Description,
             LocationId = dto.LocationId,
             ListingTypeId = dto.ListingTypeId,
             AgentId = dto.AgentId,
@@ -77,6 +79,7 @@ public static class MappingExtensions
 
         target.Title = dto.Title;
         target.Address = dto.Address;
+        target.Description = dto.Description;
         target.LocationId = dto.LocationId;
         target.ListingTypeId = dto.ListingTypeId;
         target.AgentId = dto.AgentId;

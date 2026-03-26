@@ -25,6 +25,17 @@ public class Agent
     [Column("profile_link")]
     public string? ProfileLink { get; set; }
 
+    [Column("email")]
+    public string? Email { get; set; }
+
+    [MaxLength(30)]
+    [Column("phone")]
+    public string? Phone { get; set; }
+
+    [MaxLength(150)]
+    [Column("location")]
+    public string? Location { get; set; }
+
     // --------------------------------------------------
     // Navigation Properties
     // --------------------------------------------------

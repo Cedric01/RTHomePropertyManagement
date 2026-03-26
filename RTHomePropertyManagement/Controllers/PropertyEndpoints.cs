@@ -12,10 +12,20 @@ public static class PropertyEndpoints
     public static IEndpointRouteBuilder MapPropertyEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet("/properties", ListProperties);
+        app.MapGet("/properties/{id}", GetPropertyById);
         app.MapPost("/properties", CreateProperty);
         app.MapPut("/properties/{id}", UpdateProperty);
         app.MapDelete("/properties/{id}", DeleteProperty);
         return app;
+    }
+
+    public static async Task<IResult> GetPropertyById(
+        IPropertyRepository repository,
+        int id)
+    {
+        var property = await repository.GetByIdAsync(id);
+        if (property is null) return Results.NotFound();
+        return Results.Ok(property.ToDto());
     }
 
     public static async Task<IResult> CreateProperty(

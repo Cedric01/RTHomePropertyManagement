@@ -26,6 +26,9 @@ public class Property
     [Column("address")]
     public string Address { get; set; } = null!;
 
+    [Column("description")]
+    public string? Description { get; set; }
+
     // --------------------------------------------------
     // Foreign Keys
     // --------------------------------------------------

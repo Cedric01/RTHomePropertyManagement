@@ -5,6 +5,7 @@ public class PropertyCreateDto
     // Basic details
     public string Title { get; set; } = null!;
     public string Address { get; set; } = null!;
+    public string? Description { get; set; }
 
     // Foreign keys
     public int? LocationId { get; set; }
