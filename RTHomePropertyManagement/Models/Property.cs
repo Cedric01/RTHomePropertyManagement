@@ -1,4 +1,3 @@
-﻿using NetTopologySuite.Geometries;
 using RTHomePropertyManagement.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -75,6 +74,93 @@ public class Property
     public int? Bathrooms { get; set; }
 
     // --------------------------------------------------
+    // Property Details (accordion)
+    // --------------------------------------------------
+
+    [Column("furnishing")]
+    [MaxLength(50)]
+    public string? Furnishing { get; set; } // e.g. "Furnished", "Semi furnished", "Unfurnished"
+
+    [Column("year_built")]
+    public int? YearBuilt { get; set; }
+
+    [Column("floor")]
+    [MaxLength(50)]
+    public string? Floor { get; set; } // e.g. "Ground", "1st"
+
+    [Column("garage")]
+    public int? Garage { get; set; }
+
+    [Column("ceiling_height")]
+    [MaxLength(20)]
+    public string? CeilingHeight { get; set; } // e.g. "3.2m"
+
+    [Column("renovation")]
+    [MaxLength(100)]
+    public string? Renovation { get; set; }
+
+    // --------------------------------------------------
+    // Utility Details (accordion)
+    // --------------------------------------------------
+
+    [Column("heating")]
+    [MaxLength(50)]
+    public string? Heating { get; set; } // e.g. "Natural gas"
+
+    [Column("has_intercom")]
+    public bool? HasIntercom { get; set; }
+
+    [Column("has_air_condition")]
+    public bool? HasAirCondition { get; set; }
+
+    [Column("window_type")]
+    [MaxLength(50)]
+    public string? WindowType { get; set; } // e.g. "Aluminum frame"
+
+    [Column("has_fireplace")]
+    public bool? HasFireplace { get; set; }
+
+    [Column("has_cable_tv")]
+    public bool? HasCableTv { get; set; }
+
+    [Column("has_elevator")]
+    public bool? HasElevator { get; set; }
+
+    [Column("has_wifi")]
+    public bool? HasWifi { get; set; }
+
+    [Column("has_ventilation")]
+    public bool? HasVentilation { get; set; }
+
+    // --------------------------------------------------
+    // Outdoor Features (accordion)
+    // --------------------------------------------------
+
+    [Column("parking_spots")]
+    public int? ParkingSpots { get; set; }
+
+    [Column("garden_size")]
+    [MaxLength(50)]
+    public string? GardenSize { get; set; } // e.g. "30m2"
+
+    [Column("disabled_access")]
+    [MaxLength(100)]
+    public string? DisabledAccess { get; set; } // e.g. "Ramp", "Yes"
+
+    [Column("has_swimming_pool")]
+    public bool? HasSwimmingPool { get; set; }
+
+    [Column("has_fence")]
+    public bool? HasFence { get; set; }
+
+    [Column("security")]
+    [MaxLength(100)]
+    public string? Security { get; set; } // e.g. "3 Cameras"
+
+    [Column("is_pet_friendly")]
+    public bool? IsPetFriendly { get; set; }
+
+    // --------------------------------------------------
     // Status & Audit
     // --------------------------------------------------
 
@@ -86,7 +172,7 @@ public class Property
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // --------------------------------------------------
-    // Navigation Properties (Optional but Recommended)
+    // Navigation Properties
     // --------------------------------------------------
 
     public Location? Location { get; set; }
