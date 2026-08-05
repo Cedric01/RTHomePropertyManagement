@@ -16,6 +16,7 @@ public class RealEstateDbContext : DbContext
     public DbSet<ListingType> ListingTypes => Set<ListingType>();
     public DbSet<PriceRange> PriceRanges => Set<PriceRange>();
     public DbSet<PropertyImage> PropertyImages => Set<PropertyImage>();
+    public DbSet<EstimateRequest> EstimateRequests => Set<EstimateRequest>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

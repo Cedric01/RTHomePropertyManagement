@@ -41,6 +41,7 @@ builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IPriceRangeRepository, PriceRangeRepository>();
 builder.Services.AddScoped<IListingTypeRepository, ListingTypeRepository>();
+builder.Services.AddScoped<IEstimateRequestRepository, EstimateRequestRepository>();
 
 
 
@@ -64,5 +65,7 @@ app.MapGroup("/api")
     .MapListingTypeEndpoints();
 app.MapGroup("/api")
     .MapAgentEndpoints();
+app.MapGroup("/api")
+    .MapEstimateRequestEndpoints();
 
 app.Run();
