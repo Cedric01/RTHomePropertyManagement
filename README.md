@@ -46,6 +46,28 @@ RTHomePropertyManagement/
 - PostgreSQL instance (local or Azure)
 - Auth0 account with an API configured
 
+### Running PostgreSQL locally via Docker
+
+A `docker-compose.yml` at the repo root spins up a local Postgres 16 instance for development:
+
+```bash
+docker compose up -d
+```
+
+This starts a container named `rthome-postgres`, exposed on host port `15432` (not the default `5432` — pick a free port if that one is already in use on your machine), with database `RtHomeV2`, user `rthome`, and password `rthome_dev_password`. Data persists in the `rthome_pgdata` Docker volume across restarts; run `docker compose down -v` to reset it.
+
+Point the app at it via user secrets (see below):
+
+```bash
+dotnet user-secrets set "ConnectionStrings:Postgres" "Host=localhost;Port=15432;Database=RtHomeV2;Username=rthome;Password=rthome_dev_password"
+```
+
+Then apply migrations to create the schema:
+
+```bash
+dotnet ef database update --context RealEstateDbContext
+```
+
 ### Setting up secrets locally
 
 Secrets are kept out of `appsettings.json` and managed via [.NET User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets) in development.

@@ -34,6 +34,17 @@ public static class AgentEndpoints
     {
         var agent = await db.Agents.FindAsync(id);
         if (agent is null) return Results.NotFound();
-        return Results.Ok(agent);
+
+        return Results.Ok(new
+        {
+            agent.Id,
+            agent.Name,
+            agent.Designation,
+            imageUrl = agent.ImageUrl,
+            link = agent.ProfileLink ?? "/agent_details",
+            agent.Email,
+            agent.Phone,
+            agent.Location
+        });
     }
 }

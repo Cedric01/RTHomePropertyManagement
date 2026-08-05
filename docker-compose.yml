@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: rthome-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: rthome
+      POSTGRES_PASSWORD: rthome_dev_password
+      POSTGRES_DB: RtHomeV2
+    ports:
+      - "15432:5432"
+    volumes:
+      - rthome_pgdata:/var/lib/postgresql/data
+
+volumes:
+  rthome_pgdata:

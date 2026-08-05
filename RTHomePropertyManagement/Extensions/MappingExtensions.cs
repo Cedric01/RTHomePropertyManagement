@@ -15,6 +15,7 @@ public static class MappingExtensions
             Id = p.Id,
             Title = p.Title,
             Address = p.Address,
+            Description = p.Description,
             LocationId = p.LocationId,
             ListingTypeId = p.ListingTypeId,
             AgentId = p.AgentId,
@@ -25,6 +26,28 @@ public static class MappingExtensions
             SquareFeet = p.SquareFeet,
             Bedrooms = p.Bedrooms,
             Bathrooms = p.Bathrooms,
+            Furnishing = p.Furnishing,
+            YearBuilt = p.YearBuilt,
+            Floor = p.Floor,
+            Garage = p.Garage,
+            CeilingHeight = p.CeilingHeight,
+            Renovation = p.Renovation,
+            Heating = p.Heating,
+            HasIntercom = p.HasIntercom,
+            HasAirCondition = p.HasAirCondition,
+            WindowType = p.WindowType,
+            HasFireplace = p.HasFireplace,
+            HasCableTv = p.HasCableTv,
+            HasElevator = p.HasElevator,
+            HasWifi = p.HasWifi,
+            HasVentilation = p.HasVentilation,
+            ParkingSpots = p.ParkingSpots,
+            GardenSize = p.GardenSize,
+            DisabledAccess = p.DisabledAccess,
+            HasSwimmingPool = p.HasSwimmingPool,
+            HasFence = p.HasFence,
+            Security = p.Security,
+            IsPetFriendly = p.IsPetFriendly,
             Status = p.Status,
             CreatedAt = p.CreatedAt,
             Location = p.Location is not null ? new LocationDto
@@ -56,6 +79,7 @@ public static class MappingExtensions
         {
             Title = dto.Title,
             Address = dto.Address,
+            Description = dto.Description,
             LocationId = dto.LocationId,
             ListingTypeId = dto.ListingTypeId,
             AgentId = dto.AgentId,
@@ -66,6 +90,28 @@ public static class MappingExtensions
             SquareFeet = dto.SquareFeet,
             Bedrooms = dto.Bedrooms,
             Bathrooms = dto.Bathrooms,
+            Furnishing = dto.Furnishing,
+            YearBuilt = dto.YearBuilt,
+            Floor = dto.Floor,
+            Garage = dto.Garage,
+            CeilingHeight = dto.CeilingHeight,
+            Renovation = dto.Renovation,
+            Heating = dto.Heating,
+            HasIntercom = dto.HasIntercom,
+            HasAirCondition = dto.HasAirCondition,
+            WindowType = dto.WindowType,
+            HasFireplace = dto.HasFireplace,
+            HasCableTv = dto.HasCableTv,
+            HasElevator = dto.HasElevator,
+            HasWifi = dto.HasWifi,
+            HasVentilation = dto.HasVentilation,
+            ParkingSpots = dto.ParkingSpots,
+            GardenSize = dto.GardenSize,
+            DisabledAccess = dto.DisabledAccess,
+            HasSwimmingPool = dto.HasSwimmingPool,
+            HasFence = dto.HasFence,
+            Security = dto.Security,
+            IsPetFriendly = dto.IsPetFriendly,
             Status = dto.Status ?? "ACTIVE"
         };
     }
@@ -77,6 +123,7 @@ public static class MappingExtensions
 
         target.Title = dto.Title;
         target.Address = dto.Address;
+        target.Description = dto.Description;
         target.LocationId = dto.LocationId;
         target.ListingTypeId = dto.ListingTypeId;
         target.AgentId = dto.AgentId;
@@ -87,6 +134,28 @@ public static class MappingExtensions
         target.SquareFeet = dto.SquareFeet;
         target.Bedrooms = dto.Bedrooms;
         target.Bathrooms = dto.Bathrooms;
+        target.Furnishing = dto.Furnishing;
+        target.YearBuilt = dto.YearBuilt;
+        target.Floor = dto.Floor;
+        target.Garage = dto.Garage;
+        target.CeilingHeight = dto.CeilingHeight;
+        target.Renovation = dto.Renovation;
+        target.Heating = dto.Heating;
+        target.HasIntercom = dto.HasIntercom;
+        target.HasAirCondition = dto.HasAirCondition;
+        target.WindowType = dto.WindowType;
+        target.HasFireplace = dto.HasFireplace;
+        target.HasCableTv = dto.HasCableTv;
+        target.HasElevator = dto.HasElevator;
+        target.HasWifi = dto.HasWifi;
+        target.HasVentilation = dto.HasVentilation;
+        target.ParkingSpots = dto.ParkingSpots;
+        target.GardenSize = dto.GardenSize;
+        target.DisabledAccess = dto.DisabledAccess;
+        target.HasSwimmingPool = dto.HasSwimmingPool;
+        target.HasFence = dto.HasFence;
+        target.Security = dto.Security;
+        target.IsPetFriendly = dto.IsPetFriendly;
         target.Status = dto.Status ?? target.Status;
     }
 }
