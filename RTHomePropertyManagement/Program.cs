@@ -15,18 +15,28 @@ if (!builder.Environment.IsDevelopment())
         builder.Configuration.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
 }
 
-builder.Services.AddOpenTelemetry()
+var otelBuilder = builder.Services.AddOpenTelemetry()
     .ConfigureResource(resource => resource
         .AddService(
             serviceName: "RTHomePropertyManagement",
             serviceVersion: Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.0.0"
-        ))
-    .UseAzureMonitor(options =>
+        ));
+
+// Only wire up Azure Monitor if a connection string is actually configured -
+// UseAzureMonitor throws on an empty/invalid connection string, which was
+// crashing the app on startup on hosts (like Cloud Run) where App Insights
+// isn't set up. Same "skip if not configured" pattern as Key Vault above.
+var appInsightsConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
+if (!string.IsNullOrEmpty(appInsightsConnectionString))
+{
+    otelBuilder.UseAzureMonitor(options =>
     {
-        options.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
+        options.ConnectionString = appInsightsConnectionString;
         options.SamplingRatio = builder.Configuration.GetValue<float>("OpenTelemetry:SamplingRatio", 1.0f);
-    })
-    .WithTracing(tracing => tracing.AddSource("Npgsql"));
+    });
+}
+
+otelBuilder.WithTracing(tracing => tracing.AddSource("Npgsql"));
 
 builder.Services.AddProblemDetails();
 
