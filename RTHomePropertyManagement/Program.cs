@@ -42,7 +42,7 @@ builder.Services.AddProblemDetails();
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddSwaggerExplorer()
+builder.Services.AddSwaggerExplorer(builder.Configuration)
                 .InjectDbContext(builder.Configuration)
                 .AddAppConfig(builder.Configuration)
                 .AddIdentityAuth(builder.Configuration);
@@ -60,12 +60,17 @@ var app = builder.Build();
 
 app.UseExceptionHandler();
 
-app.ConfigureSwaggerExplorer()
+app.ConfigureSwaggerExplorer(builder.Configuration)
    .ConfigureCORS(builder.Configuration)
    .AddIdentityAuthMiddlewares();
 
 app.MapControllers();
 
+// All /api endpoints now require a valid Auth0 access token (see
+// Extensions/IdentityExtensions.cs for the JWT bearer setup). Callers are
+// currently: the RealEstate.Mcp server (via its own M2M client-credentials
+// token) and you, via Swagger's "Authorize" button (real user login) - the
+// Angular frontend's login flow is being wired up in a follow-up session.
 app.MapGroup("/api")
     .RequireAuthorization()
     .MapPropertyEndpoints();
