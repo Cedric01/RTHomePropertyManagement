@@ -65,17 +65,24 @@ app.ConfigureSwaggerExplorer()
    .AddIdentityAuthMiddlewares();
 
 app.MapControllers();
+
 app.MapGroup("/api")
+    .RequireAuthorization()
     .MapPropertyEndpoints();
 app.MapGroup("/api")
+    .RequireAuthorization()
     .MapLocationEndpoints();
 app.MapGroup("/api")
+    .RequireAuthorization()
     .MapPriceRangeEndpoints();
 app.MapGroup("/api")
+    .RequireAuthorization()
     .MapListingTypeEndpoints();
 app.MapGroup("/api")
+    .RequireAuthorization()
     .MapAgentEndpoints();
 app.MapGroup("/api")
+    .RequireAuthorization()
     .MapEstimateRequestEndpoints();
 
 app.Run();
