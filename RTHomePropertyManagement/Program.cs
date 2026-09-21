@@ -66,7 +66,6 @@ builder.Services.AddRateLimiter(options =>
 builder.Services.AddControllers();
 builder.Services.AddSwaggerExplorer(builder.Configuration)
                 .InjectDbContext(builder.Configuration)
-                .AddAppConfig(builder.Configuration)
                 .AddIdentityAuth(builder.Configuration);
 
 builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
