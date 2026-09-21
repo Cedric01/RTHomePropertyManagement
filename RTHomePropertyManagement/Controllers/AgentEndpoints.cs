@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
-using RTHomePropertyManagement.Models;
+using RTHomePropertyManagement.Extensions;
+using RTHomePropertyManagement.Repositories;
 
 namespace RTHomePropertyManagement.Controllers;
 
@@ -13,38 +13,17 @@ public static class AgentEndpoints
         return app;
     }
 
-    public static async Task<IResult> ListAgents(RealEstateDbContext db)
+    public static async Task<IResult> ListAgents(IAgentRepository repository)
     {
-        var agents = await db.Agents
-            .OrderBy(a => a.Id)
-            .Select(a => new
-            {
-                a.Id,
-                a.Name,
-                a.Designation,
-                imageUrl = a.ImageUrl,
-                link = a.ProfileLink ?? "/agent_details"
-            })
-            .ToListAsync();
-
-        return Results.Ok(agents);
+        var agents = await repository.GetAllAsync();
+        return Results.Ok(agents.Select(a => a.ToDto()).ToList());
     }
 
-    public static async Task<IResult> GetAgentById(RealEstateDbContext db, int id)
+    public static async Task<IResult> GetAgentById(IAgentRepository repository, int id)
     {
-        var agent = await db.Agents.FindAsync(id);
+        var agent = await repository.GetByIdAsync(id);
         if (agent is null) return Results.NotFound();
 
-        return Results.Ok(new
-        {
-            agent.Id,
-            agent.Name,
-            agent.Designation,
-            imageUrl = agent.ImageUrl,
-            link = agent.ProfileLink ?? "/agent_details",
-            agent.Email,
-            agent.Phone,
-            agent.Location
-        });
+        return Results.Ok(agent.ToDto());
     }
 }

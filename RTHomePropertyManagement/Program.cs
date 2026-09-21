@@ -73,6 +73,8 @@ builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IPriceRangeRepository, PriceRangeRepository>();
 builder.Services.AddScoped<IListingTypeRepository, ListingTypeRepository>();
 builder.Services.AddScoped<IEstimateRequestRepository, EstimateRequestRepository>();
+builder.Services.AddScoped<IReferenceDataValidator, ReferenceDataValidator>();
+builder.Services.AddScoped<IAgentRepository, AgentRepository>();
 
 
 

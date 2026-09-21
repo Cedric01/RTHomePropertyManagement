@@ -172,6 +172,18 @@ public class Property
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // --------------------------------------------------
+    // Concurrency
+    // --------------------------------------------------
+
+    // Maps to Postgres's built-in xmin system column via Npgsql's EF Core
+    // convention for [Timestamp] + uint. Gives optimistic concurrency (a 409
+    // on conflicting concurrent edits, see PropertyRepository.UpdateAsync)
+    // with no schema migration needed, since xmin already exists on every
+    // row.
+    [Timestamp]
+    public uint Version { get; set; }
+
+    // --------------------------------------------------
     // Navigation Properties
     // --------------------------------------------------
 

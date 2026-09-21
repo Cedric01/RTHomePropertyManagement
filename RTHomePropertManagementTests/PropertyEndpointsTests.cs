@@ -8,6 +8,7 @@ using RTHomePropertyManagement.Controllers;
 using RTHomePropertyManagement.Models;
 using RTHomePropertyManagement.DTOs;
 using RTHomePropertyManagement.Extensions;
+using RTHomePropertyManagement.Repositories;
 using RTHomePropertyManagementTests;
 
 namespace RTHomePropertManagementTests;
@@ -96,8 +97,8 @@ public class PropertyEndpointsTests
 
         var mockRepo = new Mock<IPropertyRepository>();
         mockRepo
-            .Setup(r => r.GetAllAsync())
-            .ReturnsAsync(properties);
+            .Setup(r => r.GetAllAsync(It.IsAny<PropertyFilter>()))
+            .ReturnsAsync((properties, properties.Count));
 
         // Act
         var result = await PropertyEndpointTestHelpers
@@ -228,5 +229,121 @@ public class PropertyEndpointsTests
 
         // Assert
         result.Should().BeOfType<NotFound>();
+    }
+
+    [Fact]
+    public async Task CreateProperty_ShouldReturnValidationProblem_WhenTitleMissing()
+    {
+        // Arrange
+        var dto = new PropertyCreateDto
+        {
+            Title = string.Empty,
+            Address = "123 Main St",
+            IsForRent = true,
+            Price = 1800.00m
+        };
+
+        var mockRepo = new Mock<IPropertyRepository>();
+
+        // Act - call the endpoint directly since InvokeCreateProperty always
+        // supplies a non-empty Title; this test needs to hand-build the DTO.
+        var result = await PropertyEndpoints.CreateProperty(
+            mockRepo.Object,
+            new AlwaysValidReferenceDataValidator(),
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<EndpointLogCategory>.Instance,
+            dto);
+
+        // Assert
+        result.Should().BeOfType<Microsoft.AspNetCore.Http.HttpResults.ValidationProblem>();
+        mockRepo.Verify(r => r.CreateAsync(It.IsAny<Property>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task CreateProperty_ShouldReturnValidationProblem_WhenReferencesAreInvalid()
+    {
+        // Arrange
+        var property = new Property
+        {
+            Title = "Modern Apartment",
+            Address = "123 Main St",
+            LocationId = 999,
+            IsForRent = true,
+            Price = 1800.00m,
+            Status = "ACTIVE"
+        };
+
+        var mockRepo = new Mock<IPropertyRepository>();
+        var mockValidator = new Mock<IReferenceDataValidator>();
+        mockValidator
+            .Setup(v => v.GetInvalidPropertyReferencesAsync(999, null, null, null))
+            .ReturnsAsync(new List<string> { "locationId" });
+
+        // Act
+        var result = await PropertyEndpointTestHelpers
+            .InvokeCreateProperty(mockRepo.Object, property, mockValidator.Object);
+
+        // Assert
+        result.Should().BeOfType<Microsoft.AspNetCore.Http.HttpResults.ValidationProblem>();
+        mockRepo.Verify(r => r.CreateAsync(It.IsAny<Property>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task UpdateProperty_ShouldReturnConflict_WhenConcurrencyConflictOccurs()
+    {
+        // Arrange
+        var existing = new Property
+        {
+            Id = 1,
+            Title = "Old Apartment",
+            Address = "123 Main St",
+            IsForRent = true,
+            Price = 1800.00m,
+            Status = "ACTIVE"
+        };
+
+        var mockRepo = new Mock<IPropertyRepository>();
+        mockRepo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(existing);
+        mockRepo
+            .Setup(r => r.UpdateAsync(1, It.IsAny<Property>()))
+            .ThrowsAsync(new ConcurrencyConflictException("Property 1 was modified by another request. Reload and try again."));
+
+        // Act
+        var result = await PropertyEndpointTestHelpers
+            .InvokeUpdateProperty(mockRepo.Object, 1, existing);
+
+        // Assert
+        result.Should().BeOfType<Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult>();
+        var problemResult = result as Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult;
+        problemResult!.StatusCode.Should().Be(409);
+    }
+
+    [Fact]
+    public async Task ListProperties_ShouldSetTotalCountHeader()
+    {
+        // Arrange
+        var properties = new List<Property>();
+        var mockRepo = new Mock<IPropertyRepository>();
+        mockRepo
+            .Setup(r => r.GetAllAsync(It.IsAny<PropertyFilter>()))
+            .ReturnsAsync((properties, 42));
+
+        var response = new Microsoft.AspNetCore.Http.DefaultHttpContext().Response;
+
+        // Act
+        var result = await PropertyEndpoints.ListProperties(
+            mockRepo.Object,
+            response,
+            locationId: null,
+            listingTypeId: null,
+            isForRent: null,
+            minPrice: null,
+            maxPrice: null,
+            minBedrooms: null,
+            page: null,
+            pageSize: null);
+
+        // Assert
+        result.Should().BeOfType<Ok<List<PropertyDto>>>();
+        response.Headers["X-Total-Count"].ToString().Should().Be("42");
     }
 }

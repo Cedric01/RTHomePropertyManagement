@@ -158,4 +158,21 @@ public static class MappingExtensions
         target.IsPetFriendly = dto.IsPetFriendly;
         target.Status = dto.Status ?? target.Status;
     }
+
+    public static AgentDto ToDto(this Agent a)
+    {
+        if (a is null) throw new ArgumentNullException(nameof(a));
+
+        return new AgentDto
+        {
+            Id = a.Id,
+            Name = a.Name,
+            Designation = a.Designation,
+            ImageUrl = a.ImageUrl,
+            Link = a.ProfileLink ?? "/agent_details",
+            Email = a.Email,
+            Phone = a.Phone,
+            Location = a.Location
+        };
+    }
 }

@@ -1,7 +1,7 @@
 using RTHomePropertyManagement.DTOs;
+using RTHomePropertyManagement.Extensions;
 using RTHomePropertyManagement.Models;
 using RTHomePropertyManagement.Repositories;
-using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("RTHomePropertManagementTests")]
@@ -16,7 +16,8 @@ public static class EstimateRequestEndpoints
         // the site can ask for a valuation without logging in. Viewing the
         // submitted requests is an agent-only function.
         app.MapGet("/estimaterequests", ListEstimateRequests).RequireAuthorization("Agent");
-        app.MapPost("/estimaterequests", CreateEstimateRequest);
+        app.MapPost("/estimaterequests", CreateEstimateRequest)
+            .AddEndpointFilter<ValidationFilter<EstimateRequestCreateDto>>();
 
         return app;
     }
@@ -30,16 +31,12 @@ public static class EstimateRequestEndpoints
 
     public static async Task<IResult> CreateEstimateRequest(
         IEstimateRequestRepository repository,
+        ILogger<EndpointLogCategory> logger,
         EstimateRequestCreateDto dto)
     {
-        var email = dto.Email?.Trim() ?? string.Empty;
-        if (email.Length == 0 || !new EmailAddressAttribute().IsValid(email))
-            return Results.ValidationProblem(new Dictionary<string, string[]>
-            {
-                ["email"] = ["A valid email address is required."]
-            });
-
+        var email = dto.Email.Trim();
         var created = await repository.CreateAsync(new EstimateRequest { Email = email });
+        logger.LogInformation("Estimate request {EstimateRequestId} submitted", created.Id);
         return Results.Ok(created);
     }
 }
