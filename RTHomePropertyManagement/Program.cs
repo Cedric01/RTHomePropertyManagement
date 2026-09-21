@@ -88,6 +88,10 @@ app.ConfigureSwaggerExplorer(builder.Configuration)
 
 app.UseRateLimiter();
 
+// Land visitors hitting the bare Cloud Run URL straight on the API docs
+// instead of a 404 - Scalar itself only answers at /scalar.
+app.MapGet("/", () => Results.Redirect("/scalar"));
+
 app.MapControllers();
 
 // Unauthenticated, not rate-limited - lets Cloud Run and uptime monitors
