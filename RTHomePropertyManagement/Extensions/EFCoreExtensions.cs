@@ -9,9 +9,6 @@ public static class EFCoreExtensions
         this IServiceCollection services,
         IConfiguration config)
     {
-        //services.AddDbContext<AppDbContext>(options =>
-        //         options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
-
         services.AddDbContext<RealEstateDbContext>(options =>
         {
             options.UseNpgsql(

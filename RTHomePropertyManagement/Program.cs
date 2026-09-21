@@ -3,8 +3,10 @@ using Azure.Monitor.OpenTelemetry.AspNetCore;
 using OpenTelemetry.Resources;
 using RTHomePropertyManagement.Controllers;
 using RTHomePropertyManagement.Extensions;
+using RTHomePropertyManagement.Models;
 using RTHomePropertyManagement.Repositories;
 using System.Reflection;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +42,26 @@ otelBuilder.WithTracing(tracing => tracing.AddSource("Npgsql"));
 
 builder.Services.AddProblemDetails();
 
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<RealEstateDbContext>();
+
+// Public API is unauthenticated, so it's the obvious target for abuse -
+// partition by client IP so each visitor gets their own budget rather than
+// one shared bucket for the whole app. 100 requests/minute is generous for
+// normal browsing/search use while still stopping a runaway script or scraper.
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("api", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 100,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        }));
+});
+
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddSwaggerExplorer(builder.Configuration)
@@ -61,10 +83,17 @@ var app = builder.Build();
 app.UseExceptionHandler();
 
 app.ConfigureSwaggerExplorer(builder.Configuration)
+   .ConfigureScalarApiReference(builder.Configuration)
    .ConfigureCORS(builder.Configuration)
    .AddIdentityAuthMiddlewares();
 
+app.UseRateLimiter();
+
 app.MapControllers();
+
+// Unauthenticated, not rate-limited - lets Cloud Run and uptime monitors
+// probe liveness without burning into the "api" rate limit budget above.
+app.MapHealthChecks("/healthz");
 
 // Reads are public (anyone can browse/search properties, locations, price
 // ranges, listing types and agents without logging in). Authorization is
@@ -73,11 +102,12 @@ app.MapControllers();
 // for what actually requires a token (property create/update/delete requires
 // the "agent" role specifically; viewing submitted estimate requests requires
 // it too; submitting one is a public lead-capture form and stays open).
-app.MapGroup("/api").MapPropertyEndpoints();
-app.MapGroup("/api").MapLocationEndpoints();
-app.MapGroup("/api").MapPriceRangeEndpoints();
-app.MapGroup("/api").MapListingTypeEndpoints();
-app.MapGroup("/api").MapAgentEndpoints();
-app.MapGroup("/api").MapEstimateRequestEndpoints();
+var api = app.MapGroup("/api").RequireRateLimiting("api");
+api.MapPropertyEndpoints();
+api.MapLocationEndpoints();
+api.MapPriceRangeEndpoints();
+api.MapListingTypeEndpoints();
+api.MapAgentEndpoints();
+api.MapEstimateRequestEndpoints();
 
 app.Run();

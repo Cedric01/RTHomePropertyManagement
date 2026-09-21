@@ -1,4 +1,5 @@
 using Microsoft.OpenApi.Models;
+using Scalar.AspNetCore;
 
 namespace RTHomePropertyManagement.Extensions;
 
@@ -47,25 +48,29 @@ public static class SwaggerExtensions
 
     public static WebApplication ConfigureSwaggerExplorer(this WebApplication app, IConfiguration config)
     {
-        // Configure the HTTP request pipeline.
+        // Keep Swashbuckle's OpenAPI JSON generation (Scalar reads this doc
+        // for its UI below) but drop Swagger's own UI - Scalar replaces it.
         app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            // Ensure this path matches the document name above
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "RT Home Property Management API v1");
-            // Optional: keep default route '/swagger'. To serve at app root, set RoutePrefix = string.Empty;
-            // c.RoutePrefix = string.Empty;
+        return app;
+    }
 
-            c.OAuthClientId(config["Auth0:SwaggerClientId"]);
-            c.OAuthUsePkce();
-            c.OAuthScopeSeparator(" ");
-            // Auth0 only issues a proper API access token (instead of just an
-            // OIDC id_token) when "audience" is passed through on the
-            // /authorize request - Swagger UI doesn't send it by default.
-            c.OAuthAdditionalQueryStringParams(new Dictionary<string, string>
-            {
-                { "audience", config["Auth0:Audience"] ?? string.Empty }
-            });
+    // Scalar's modern API reference UI, served at /scalar, reading the
+    // OpenAPI document Swashbuckle generates above. Carries over the same
+    // Auth0 authorization-code + PKCE flow (and the "audience" query param
+    // Auth0 needs to issue an API access token) that Swagger UI used.
+    public static WebApplication ConfigureScalarApiReference(this WebApplication app, IConfiguration config)
+    {
+        app.MapScalarApiReference(options =>
+        {
+            options.WithTitle("RT Home Property Management API")
+                .WithOpenApiRoutePattern("/swagger/{documentName}/swagger.json")
+                .AddPreferredSecuritySchemes("Auth0")
+                .AddAuthorizationCodeFlow("Auth0", flow =>
+                {
+                    flow.ClientId = config["Auth0:SwaggerClientId"];
+                    flow.Pkce = Pkce.Sha256;
+                    flow.AddQueryParameter("audience", config["Auth0:Audience"] ?? string.Empty);
+                });
         });
         return app;
     }
