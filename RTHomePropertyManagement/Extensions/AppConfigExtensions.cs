@@ -8,8 +8,10 @@ public static class AppConfigExtensions
         this WebApplication app,
         IConfiguration config)
     {
+        // The Azure Static Web Apps origin is gone now that the frontend lives on
+        // Firebase Hosting - swapped for the real rthome-836d6.web.app origin.
         app.UseCors(options =>
-        options.WithOrigins("http://localhost:4200", "https://orange-rock-0f996da0f-1.eastus2.2.azurestaticapps.net")
+        options.WithOrigins("http://localhost:4200", "https://rthome-836d6.web.app")
         .AllowAnyMethod()
         .AllowAnyHeader());
         return app;
