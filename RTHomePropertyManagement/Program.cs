@@ -66,28 +66,18 @@ app.ConfigureSwaggerExplorer(builder.Configuration)
 
 app.MapControllers();
 
-// All /api endpoints now require a valid Auth0 access token (see
-// Extensions/IdentityExtensions.cs for the JWT bearer setup). Callers are
-// currently: the RealEstate.Mcp server (via its own M2M client-credentials
-// token) and you, via Swagger's "Authorize" button (real user login) - the
-// Angular frontend's login flow is being wired up in a follow-up session.
-app.MapGroup("/api")
-    .RequireAuthorization()
-    .MapPropertyEndpoints();
-app.MapGroup("/api")
-    .RequireAuthorization()
-    .MapLocationEndpoints();
-app.MapGroup("/api")
-    .RequireAuthorization()
-    .MapPriceRangeEndpoints();
-app.MapGroup("/api")
-    .RequireAuthorization()
-    .MapListingTypeEndpoints();
-app.MapGroup("/api")
-    .RequireAuthorization()
-    .MapAgentEndpoints();
-app.MapGroup("/api")
-    .RequireAuthorization()
-    .MapEstimateRequestEndpoints();
+// Reads are public (anyone can browse/search properties, locations, price
+// ranges, listing types and agents without logging in). Authorization is
+// applied per-endpoint instead of on the whole group: see the "Agent" policy
+// checks inside PropertyEndpoints/PriceRangeEndpoints/EstimateRequestEndpoints
+// for what actually requires a token (property create/update/delete requires
+// the "agent" role specifically; viewing submitted estimate requests requires
+// it too; submitting one is a public lead-capture form and stays open).
+app.MapGroup("/api").MapPropertyEndpoints();
+app.MapGroup("/api").MapLocationEndpoints();
+app.MapGroup("/api").MapPriceRangeEndpoints();
+app.MapGroup("/api").MapListingTypeEndpoints();
+app.MapGroup("/api").MapAgentEndpoints();
+app.MapGroup("/api").MapEstimateRequestEndpoints();
 
 app.Run();

@@ -13,9 +13,9 @@ public static class PropertyEndpoints
     {
         app.MapGet("/properties", ListProperties);
         app.MapGet("/properties/{id}", GetPropertyById);
-        app.MapPost("/properties", CreateProperty);
-        app.MapPut("/properties/{id}", UpdateProperty);
-        app.MapDelete("/properties/{id}", DeleteProperty);
+        app.MapPost("/properties", CreateProperty).RequireAuthorization("Agent");
+        app.MapPut("/properties/{id}", UpdateProperty).RequireAuthorization("Agent");
+        app.MapDelete("/properties/{id}", DeleteProperty).RequireAuthorization("Agent");
         return app;
     }
 

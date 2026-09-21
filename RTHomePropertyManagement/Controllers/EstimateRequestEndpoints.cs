@@ -12,7 +12,10 @@ public static class EstimateRequestEndpoints
 {
     public static IEndpointRouteBuilder MapEstimateRequestEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/estimaterequests", ListEstimateRequests);
+        // Submitting a request is a public lead-capture form - anyone browsing
+        // the site can ask for a valuation without logging in. Viewing the
+        // submitted requests is an agent-only function.
+        app.MapGet("/estimaterequests", ListEstimateRequests).RequireAuthorization("Agent");
         app.MapPost("/estimaterequests", CreateEstimateRequest);
 
         return app;

@@ -11,7 +11,7 @@ public static class PriceRangeEndpoints
     public static IEndpointRouteBuilder MapPriceRangeEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet("/priceranges", ListPriceRanges);
-        app.MapPost("/priceranges", CreatePriceRange);
+        app.MapPost("/priceranges", CreatePriceRange).RequireAuthorization("Agent");
 
         return app;
     }
