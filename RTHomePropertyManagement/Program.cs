@@ -107,12 +107,38 @@ app.MapHealthChecks("/healthz");
 // for what actually requires a token (property create/update/delete requires
 // the "agent" role specifically; viewing submitted estimate requests requires
 // it too; submitting one is a public lead-capture form and stays open).
-var api = app.MapGroup("/api").RequireRateLimiting("api");
-api.MapPropertyEndpoints();
-api.MapLocationEndpoints();
-api.MapPriceRangeEndpoints();
-api.MapListingTypeEndpoints();
-api.MapAgentEndpoints();
-api.MapEstimateRequestEndpoints();
+//
+// /api/v1 is the canonical, versioned surface going forward - any breaking
+// change to a route or payload shape should land as /api/v2 alongside it,
+// never as an in-place change to v1.
+static void MapApiEndpoints(RouteGroupBuilder group)
+{
+    group.MapPropertyEndpoints();
+    group.MapLocationEndpoints();
+    group.MapPriceRangeEndpoints();
+    group.MapListingTypeEndpoints();
+    group.MapAgentEndpoints();
+    group.MapEstimateRequestEndpoints();
+}
+
+static async ValueTask<object?> WithApiVersionHeader(
+    EndpointFilterInvocationContext invocationContext,
+    EndpointFilterDelegate next)
+{
+    invocationContext.HttpContext.Response.Headers["X-Api-Version"] = "1.0";
+    return await next(invocationContext);
+}
+
+var apiV1 = app.MapGroup("/api/v1").RequireRateLimiting("api");
+MapApiEndpoints(apiV1);
+apiV1.AddEndpointFilter(WithApiVersionHeader);
+
+// Unversioned /api is a temporary alias for v1, kept only so the existing
+// Angular frontend (which still calls /api/... directly) doesn't break.
+// Remove this block once the frontend is updated to call /api/v1 - from
+// that point /api should 404 rather than silently keep serving v1 forever.
+var apiUnversioned = app.MapGroup("/api").RequireRateLimiting("api");
+MapApiEndpoints(apiUnversioned);
+apiUnversioned.AddEndpointFilter(WithApiVersionHeader);
 
 app.Run();
