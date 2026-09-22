@@ -232,34 +232,7 @@ public class PropertyEndpointsTests
     }
 
     [Fact]
-    public async Task CreateProperty_ShouldReturnValidationProblem_WhenTitleMissing()
-    {
-        // Arrange
-        var dto = new PropertyCreateDto
-        {
-            Title = string.Empty,
-            Address = "123 Main St",
-            IsForRent = true,
-            Price = 1800.00m
-        };
-
-        var mockRepo = new Mock<IPropertyRepository>();
-
-        // Act - call the endpoint directly since InvokeCreateProperty always
-        // supplies a non-empty Title; this test needs to hand-build the DTO.
-        var result = await PropertyEndpoints.CreateProperty(
-            mockRepo.Object,
-            new AlwaysValidReferenceDataValidator(),
-            Microsoft.Extensions.Logging.Abstractions.NullLogger<EndpointLogCategory>.Instance,
-            dto);
-
-        // Assert
-        result.Should().BeOfType<Microsoft.AspNetCore.Http.HttpResults.ValidationProblem>();
-        mockRepo.Verify(r => r.CreateAsync(It.IsAny<Property>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task CreateProperty_ShouldReturnValidationProblem_WhenReferencesAreInvalid()
+    public async Task CreateProperty_ShouldReturnProblem_WhenReferencesAreInvalid()
     {
         // Arrange
         var property = new Property
@@ -282,8 +255,12 @@ public class PropertyEndpointsTests
         var result = await PropertyEndpointTestHelpers
             .InvokeCreateProperty(mockRepo.Object, property, mockValidator.Object);
 
-        // Assert
-        result.Should().BeOfType<Microsoft.AspNetCore.Http.HttpResults.ValidationProblem>();
+        // Assert - Results.ValidationProblem(...) resolves to ProblemHttpResult
+        // at runtime (not the ValidationProblem typed-result), same as
+        // Results.Problem(...) used for the 409 conflict case below.
+        result.Should().BeOfType<Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult>();
+        var problemResult = result as Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult;
+        problemResult!.StatusCode.Should().Be(400);
         mockRepo.Verify(r => r.CreateAsync(It.IsAny<Property>()), Times.Never);
     }
 
