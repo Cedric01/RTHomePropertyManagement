@@ -24,10 +24,6 @@ var otelBuilder = builder.Services.AddOpenTelemetry()
             serviceVersion: Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.0.0"
         ));
 
-// Only wire up Azure Monitor if a connection string is actually configured -
-// UseAzureMonitor throws on an empty/invalid connection string, which was
-// crashing the app on startup on hosts (like Cloud Run) where App Insights
-// isn't set up. Same "skip if not configured" pattern as Key Vault above.
 var appInsightsConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
 if (!string.IsNullOrEmpty(appInsightsConnectionString))
 {
@@ -45,10 +41,6 @@ builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<RealEstateDbContext>();
 
-// Public API is unauthenticated, so it's the obvious target for abuse -
-// partition by client IP so each visitor gets their own budget rather than
-// one shared bucket for the whole app. 100 requests/minute is generous for
-// normal browsing/search use while still stopping a runaway script or scraper.
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -89,28 +81,11 @@ app.ConfigureSwaggerExplorer(builder.Configuration)
    .AddIdentityAuthMiddlewares();
 
 app.UseRateLimiter();
-
-// Land visitors hitting the bare Cloud Run URL straight on the API docs
-// instead of a 404 - Scalar itself only answers at /scalar.
 app.MapGet("/", () => Results.Redirect("/scalar"));
 
 app.MapControllers();
-
-// Unauthenticated, not rate-limited - lets Cloud Run and uptime monitors
-// probe liveness without burning into the "api" rate limit budget above.
 app.MapHealthChecks("/healthz");
 
-// Reads are public (anyone can browse/search properties, locations, price
-// ranges, listing types and agents without logging in). Authorization is
-// applied per-endpoint instead of on the whole group: see the "Agent" policy
-// checks inside PropertyEndpoints/PriceRangeEndpoints/EstimateRequestEndpoints
-// for what actually requires a token (property create/update/delete requires
-// the "agent" role specifically; viewing submitted estimate requests requires
-// it too; submitting one is a public lead-capture form and stays open).
-//
-// /api/v1 is the canonical, versioned surface going forward - any breaking
-// change to a route or payload shape should land as /api/v2 alongside it,
-// never as an in-place change to v1.
 static void MapApiEndpoints(RouteGroupBuilder group)
 {
     group.MapPropertyEndpoints();
