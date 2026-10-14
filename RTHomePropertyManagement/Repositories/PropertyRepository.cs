@@ -47,6 +47,9 @@ public class PropertyRepository : IPropertyRepository
 
             if (filter.MinBedrooms is int minBedrooms)
                 query = query.Where(p => p.Bedrooms >= minBedrooms);
+
+            if (filter.OwnerId is string ownerId)
+                query = query.Where(p => p.OwnerId == ownerId);
         }
 
         query = query.OrderByDescending(p => p.CreatedAt);
@@ -65,6 +68,43 @@ public class PropertyRepository : IPropertyRepository
 
         var items = await query.ToListAsync();
         return (items, totalCount);
+    }
+
+    public async Task<Property?> AddImagesAsync(int id, IReadOnlyList<string> imageUrls)
+    {
+        var property = await _dbContext.Properties
+            .Include(p => p.Location)
+            .Include(p => p.PriceRange)
+            .Include(p => p.Images)
+            .FirstOrDefaultAsync(p => p.Id == id);
+        if (property is null) return null;
+
+        var nextOrder = property.Images.Count == 0 ? 0 : property.Images.Max(i => i.SortOrder) + 1;
+        foreach (var url in imageUrls)
+            property.Images.Add(new PropertyImage { ImageUrl = url, SortOrder = nextOrder++ });
+
+        await _dbContext.SaveChangesAsync();
+        return property;
+    }
+
+    public async Task<bool> RemoveImageAsync(int id, string imageUrl)
+    {
+        var image = await _dbContext.PropertyImages
+            .FirstOrDefaultAsync(i => i.PropertyId == id && i.ImageUrl == imageUrl);
+        if (image is null) return false;
+
+        _dbContext.PropertyImages.Remove(image);
+        await _dbContext.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<Dictionary<string, int>> GetStatusCountsAsync(string ownerId)
+    {
+        return await _dbContext.Properties
+            .Where(p => p.OwnerId == ownerId)
+            .GroupBy(p => p.Status)
+            .Select(g => new { Status = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.Status, x => x.Count);
     }
 
     public async Task<Property?> GetByIdAsync(int id)

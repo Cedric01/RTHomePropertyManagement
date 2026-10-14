@@ -58,7 +58,8 @@ builder.Services.AddRateLimiter(options =>
 builder.Services.AddControllers();
 builder.Services.AddSwaggerExplorer(builder.Configuration)
                 .InjectDbContext(builder.Configuration)
-                .AddIdentityAuth(builder.Configuration);
+                .AddIdentityAuth(builder.Configuration)
+                .AddImageStorage(builder.Configuration);
 
 builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
@@ -78,6 +79,7 @@ app.UseExceptionHandler();
 app.ConfigureSwaggerExplorer(builder.Configuration)
    .ConfigureScalarApiReference(builder.Configuration)
    .ConfigureCORS(builder.Configuration)
+   .UseLocalImageFiles()
    .AddIdentityAuthMiddlewares();
 
 app.UseRateLimiter();

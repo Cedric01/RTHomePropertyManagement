@@ -13,6 +13,9 @@ public class PropertyFilter
     public decimal? MaxPrice { get; set; }
     public int? MinBedrooms { get; set; }
 
+    // Only properties created by this Auth0 user id.
+    public string? OwnerId { get; set; }
+
     // Paging only kicks in when both are supplied and PageSize is positive.
     public int? Page { get; set; }
     public int? PageSize { get; set; }

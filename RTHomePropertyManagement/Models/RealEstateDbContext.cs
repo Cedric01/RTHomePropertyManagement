@@ -42,6 +42,9 @@ public class RealEstateDbContext : DbContext
             .WithMany(l => l.Properties)
             .HasForeignKey(p => p.PriceRangeId);
 
+        modelBuilder.Entity<Property>()
+            .HasIndex(p => p.OwnerId);
+
         modelBuilder.Entity<PropertyImage>()
             .HasOne(pi => pi.Property)
             .WithMany(p => p.Images)

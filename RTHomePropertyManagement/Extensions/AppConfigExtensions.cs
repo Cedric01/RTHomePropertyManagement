@@ -11,7 +11,9 @@ public static class AppConfigExtensions
         app.UseCors(options =>
         options.WithOrigins("http://localhost:4200", "https://rthome-836d6.web.app")
         .AllowAnyMethod()
-        .AllowAnyHeader());
+        .AllowAnyHeader()
+        // Lets the browser read the total row count the list endpoint returns for paging.
+        .WithExposedHeaders("X-Total-Count"));
         return app;
     }
 }

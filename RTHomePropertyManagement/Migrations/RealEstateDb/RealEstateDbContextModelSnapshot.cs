@@ -296,6 +296,11 @@ namespace RTHomePropertyManagement.Migrations.RealEstateDb
                         .HasColumnType("integer")
                         .HasColumnName("location_id");
 
+                    b.Property<string>("OwnerId")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("owner_id");
+
                     b.Property<int?>("ParkingSpots")
                         .HasColumnType("integer")
                         .HasColumnName("parking_spots");
@@ -339,6 +344,12 @@ namespace RTHomePropertyManagement.Migrations.RealEstateDb
                         .HasColumnType("character varying(255)")
                         .HasColumnName("title");
 
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.Property<string>("WindowType")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
@@ -355,6 +366,8 @@ namespace RTHomePropertyManagement.Migrations.RealEstateDb
                     b.HasIndex("ListingTypeId");
 
                     b.HasIndex("LocationId");
+
+                    b.HasIndex("OwnerId");
 
                     b.HasIndex("PriceRangeId");
 

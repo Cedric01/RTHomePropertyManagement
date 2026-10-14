@@ -490,3 +490,6 @@ $RECYCLE.BIN/
 /.vs/RTHomePropertyManagement/DesignTimeBuild/.dtbcache.v2
 /.vs/RTHomePropertyManagement/v17/.futdcache.v2
 /.vs/RTHomePropertyManagement/v17/DocumentLayout.json
+
+# Locally uploaded property photos (development only)
+/RTHomePropertyManagement/uploads/

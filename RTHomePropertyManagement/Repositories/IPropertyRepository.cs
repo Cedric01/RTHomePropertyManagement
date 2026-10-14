@@ -14,4 +14,14 @@ public interface IPropertyRepository
     // request between the caller's read and this write.
     Task<Property?> UpdateAsync(int id, Property updatedProperty);
     Task<bool> DeleteAsync(int id);
+
+    // Appends images (in the given order) after any the property already has.
+    // Returns null if the property doesn't exist.
+    Task<Property?> AddImagesAsync(int id, IReadOnlyList<string> imageUrls);
+
+    // Returns false if the property has no image with that URL.
+    Task<bool> RemoveImageAsync(int id, string imageUrl);
+
+    // Number of the owner's properties per status (e.g. ACTIVE, SOLD, RENTED).
+    Task<Dictionary<string, int>> GetStatusCountsAsync(string ownerId);
 }

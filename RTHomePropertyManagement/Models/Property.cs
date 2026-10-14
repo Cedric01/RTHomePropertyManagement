@@ -171,6 +171,13 @@ public class Property
     [Column("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    // Auth0 user id (the token's "sub" claim) of whoever created the listing.
+    // Null for rows created before ownership existed: those stay publicly
+    // visible but belong to nobody, so no one can edit them through the API.
+    [Column("owner_id")]
+    [MaxLength(128)]
+    public string? OwnerId { get; set; }
+
     // --------------------------------------------------
     // Concurrency
     // --------------------------------------------------
